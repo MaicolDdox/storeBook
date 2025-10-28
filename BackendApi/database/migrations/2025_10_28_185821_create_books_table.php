@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('books', function (Blueprint $table) {
             $table->id();
 
-            //Relaciones con Type and  Category
-            $table->foreignId('type_id')->constrained('types')->onDelete('CASCADE');
+            //Relaciones con Category
             $table->foreignId('category_id')->constrained('categories')->onDelete('CASCADE');
 
             $table->string('titulo');

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Type extends Model
 {
@@ -15,5 +16,10 @@ class Type extends Model
         'descripccion',
     ];
 
-    //Relacion con 
+    //Relacion con categorias
+    public function category():HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
 }
