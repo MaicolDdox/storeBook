@@ -1,0 +1,36 @@
+
+### Funcion index de controlador CategoryController
+GET http://localhost:8000/api/categories
+Accept: application/json
+
+### funcion store del controlador CategoryController
+POST http://localhost:8000/api/categories
+Accept: application/json
+Content-Type: application/json
+
+{
+    "type_id": 2,
+    "name": "Fantasia",
+    "descripccion": "genero que se caracteriza en libros de siencia ficcion"
+}
+
+### Funcion show del controlador CategoryController
+GET http://localhost:8000/api/categories/1
+Accept: application/json
+
+### funcion update del controlador CategoryController
+PUT http://localhost:8000/api/categories/1
+Accept: application/json
+Content-Type: application/json
+
+{
+    "type_id": 3,
+    "name": "Ciencia ficcion",
+    "descripccion": "genero que se caracteriza en libros de siencia ficcion"
+}
+
+
+
+### Eliminar uno (reemplaza 1 por el ID)
+DELETE http://localhost:8000/api/categories/1
+Accept: application/json

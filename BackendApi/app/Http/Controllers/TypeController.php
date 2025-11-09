@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Type;
+use Dom\HTMLElement;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class TypeController extends Controller
 {
@@ -12,7 +14,8 @@ class TypeController extends Controller
      */
     public function index()
     {
-        //
+        $types = Type::all();
+        return response()->json($types, 200);
     }
 
     /**
@@ -20,7 +23,19 @@ class TypeController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name'         => ['required', Rule::in(['ficcion', 'no ficcion'])],
+            'descripccion' => ['required', 'string', 'max:255'],
+        ]);
+
+        $type = new Type($validated);
+        $type->save();
+
+        return response()->json([
+            'data'    => $type,
+            'message' => 'Genero creado correctamente',
+        ], 201);
+
     }
 
     /**
@@ -28,7 +43,10 @@ class TypeController extends Controller
      */
     public function show(Type $type)
     {
-        //
+        return response()->json([
+            'data'    => $type,
+            'message' => 'Ok'
+        ], 200);
     }
 
     /**
@@ -36,7 +54,18 @@ class TypeController extends Controller
      */
     public function update(Request $request, Type $type)
     {
-        //
+        $validated = $request->validate([
+            'name'         => ['nullable', Rule::in(['ficcion', 'no ficcion'])],
+            'descripccion' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        $type->update($validated);
+
+        return response()->json([
+            'data'    => $type,
+            'message' => 'Genero de libro editado correctamente',
+        ], 200);
+
     }
 
     /**
@@ -44,6 +73,11 @@ class TypeController extends Controller
      */
     public function destroy(Type $type)
     {
-        //
+        $type->delete();
+
+        return response()->json([
+            'data'    => $type,
+            'message' => 'Genero con ID ' . $type->id . ' eliminado correctamente',
+        ], 200);
     }
 }

@@ -1,0 +1,30 @@
+### REGISTER (opcional)
+POST http://localhost:8000/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Usuario2",
+  "email": "usuario2@gmail.com",
+  "password": "secret"
+}
+
+### LOGIN
+POST http://localhost:8000/api/auth/login
+Accept: application/json
+Content-Type: application/json
+
+{
+  "email": "usuario2@gmail.com",
+  "password": "secret",
+  "device": "vscode"
+}
+
+### ME
+GET http://localhost:8000/api/me
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### LOGOUT
+POST http://localhost:8000/api/auth/logout
+Accept: application/json
+Authorization: Bearer {{token}}

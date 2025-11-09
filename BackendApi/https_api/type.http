@@ -1,0 +1,31 @@
+### Listar todos
+GET http://localhost:8000/api/types
+Accept: application/json
+
+### Mostrar uno por ID (reemplaza 1 por el ID real)
+GET http://localhost:8000/api/types/1
+Accept: application/json
+
+### Crear nuevo
+POST http://localhost:8000/api/types
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "ficcion",
+    "descripccion": "Ejemplo de tipo ficcion"
+}
+
+### Actualizar uno (reemplaza 1 por el ID)
+PUT http://localhost:8000/api/types/1
+Accept: application/json
+Content-Type: application/json
+
+{
+    "name": "no ficcion",
+    "descripccion": "Descripción actualizada"
+}
+
+### Eliminar uno (reemplaza 1 por el ID)
+DELETE http://localhost:8000/api/types/1
+Accept: application/json

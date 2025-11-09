@@ -12,6 +12,7 @@ class ShoppingCart extends Model
 
     protected $fillable =
     [
+        'book_id',
         'total',
     ];
 

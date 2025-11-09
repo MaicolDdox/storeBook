@@ -14,7 +14,26 @@ return new class extends Migration
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
             $table->foreignId('type_id')->constrained('types')->onDelete('CASCADE');
-            $table->string('name');
+            $table->enum('name', [
+                                    'Ciencia ficcion',
+                                    'Fantasia',
+                                    'Terror',
+                                    'Romance',
+                                    'Misterio y suspense',
+                                    'Novela negra',
+                                    'Thriller',
+                                    'Distopia',
+                                    'Western',
+                                    'Historia',
+                                    'Divulgacion cientifica',
+                                    'Autoayuda y superacion personal',
+                                    'Politica',
+                                    'Ciencias sociales',
+                                    'Memorias',
+                                    'Filosofia',
+                                    'Religion'
+                                ]);
+                                ;
             $table->string('descripccion')->nullable();
             $table->timestamps();
         });

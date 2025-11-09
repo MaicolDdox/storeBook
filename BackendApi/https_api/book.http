@@ -1,0 +1,54 @@
+###  Obtener todos los libros
+GET http://localhost:8000/api/books
+Accept: application/json
+
+
+###  Crear un nuevo libro (store)
+POST http://localhost:8000/api/books
+Accept: application/json
+Content-Type: application/json
+
+{
+    "category_id": 2,
+    "titulo": "El señor de los anillos",
+    "foto": "portadas/lotr.jpg",
+    "descripccion_larga": "Una épica historia de fantasía escrita por J.R.R. Tolkien.",
+    "autor": "J.R.R. Tolkien",
+    "editorial": "Minotauro",
+    "year": "1954",
+    "numero_paginas": "1216",
+    "stock": 10,
+    "precio": 89000,
+    "estado": "disponible"
+}
+
+
+###  Mostrar un libro específico (show)
+GET http://localhost:8000/api/books/1
+Accept: application/json
+
+
+###  Actualizar un libro existente (update)
+PUT http://localhost:8000/api/books/1
+Accept: application/json
+Content-Type: application/json
+
+{
+    "category_id": 3,
+    "titulo": "El Hobbit",
+    "foto": "portadas/hobbit.jpg",
+    "descripccion_larga": "Precuela de El señor de los anillos, que narra el viaje de Bilbo Bolsón.",
+    "autor": "J.R.R. Tolkien",
+    "editorial": "Minotauro",
+    "year": "1937",
+    "numero_paginas": "310",
+    "stock": 15,
+    "precio": 75000,
+    "estado": "disponible"
+}
+
+
+###  Eliminar un libro (destroy)
+DELETE http://localhost:8000/api/books/1
+Accept: application/json
+
