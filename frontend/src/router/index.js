@@ -23,17 +23,10 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      component: AuthLayout,
-      children: [
-        { path: 'login', name: 'login', component: LoginPage, meta: { guestOnly: true } },
-        { path: 'register', name: 'register', component: RegisterPage, meta: { guestOnly: true } },
-      ],
-    },
-    {
-      path: '/',
       component: ClientLayout,
       children: [
         { path: '', name: 'home', component: HomePage },
+        { path: 'home', redirect: { name: 'home' } },
         { path: 'catalog', name: 'catalog', component: CatalogPage },
         { path: 'books/:id', name: 'book-detail', component: BookDetailPage, props: true },
         {
@@ -61,6 +54,14 @@ const router = createRouter({
           props: true,
           meta: { requiresAuth: true },
         },
+      ],
+    },
+    {
+      path: '/',
+      component: AuthLayout,
+      children: [
+        { path: 'login', name: 'login', component: LoginPage, meta: { guestOnly: true } },
+        { path: 'register', name: 'register', component: RegisterPage, meta: { guestOnly: true } },
       ],
     },
     {
