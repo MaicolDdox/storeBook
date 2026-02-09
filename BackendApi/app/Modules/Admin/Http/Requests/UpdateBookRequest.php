@@ -26,6 +26,8 @@ class UpdateBookRequest extends FormRequest
             'category_id' => ['sometimes', 'integer', 'exists:categories,id'],
             'title' => ['sometimes', 'string', 'max:180'],
             'cover_image' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'file', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:5120'],
+            'remove_image' => ['sometimes', 'boolean'],
             'description' => ['sometimes', 'string', 'max:65535'],
             'author' => ['sometimes', 'string', 'max:120'],
             'publisher' => ['nullable', 'string', 'max:120'],

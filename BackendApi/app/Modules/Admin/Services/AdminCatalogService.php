@@ -7,6 +7,8 @@ use App\Models\Category;
 use App\Models\Genre;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class AdminCatalogService
@@ -86,6 +88,7 @@ class AdminCatalogService
      */
     public function createBook(array $payload): Book
     {
+        $payload = $this->prepareBookPayload($payload);
         $payload['slug'] = $this->generateUniqueSlug(Book::class, $payload['title']);
         $payload['status'] = $this->resolveBookStatus($payload);
 
@@ -97,6 +100,9 @@ class AdminCatalogService
      */
     public function updateBook(Book $book, array $payload): Book
     {
+        $oldCoverImage = $book->cover_image;
+        $payload = $this->prepareBookPayload($payload);
+
         if (isset($payload['title'])) {
             $payload['slug'] = $this->generateUniqueSlug(Book::class, $payload['title'], $book->id);
         }
@@ -104,12 +110,23 @@ class AdminCatalogService
         $payload['status'] = $this->resolveBookStatus($payload, $book->status);
 
         $book->update($payload);
+        if (
+            isset($payload['cover_image']) &&
+            $payload['cover_image'] !== $oldCoverImage &&
+            $this->isStoredCoverImagePath($oldCoverImage)
+        ) {
+            Storage::disk('public')->delete($oldCoverImage);
+        }
 
         return $book->fresh('category.genre');
     }
 
     public function deleteBook(Book $book): void
     {
+        if ($this->isStoredCoverImagePath($book->cover_image)) {
+            Storage::disk('public')->delete($book->cover_image);
+        }
+
         $book->delete();
     }
 
@@ -148,5 +165,34 @@ class AdminCatalogService
         }
 
         return $status;
+    }
+
+    /**
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    private function prepareBookPayload(array $payload): array
+    {
+        $removeImage = (bool) ($payload['remove_image'] ?? false);
+        unset($payload['remove_image']);
+
+        if (isset($payload['image']) && $payload['image'] instanceof UploadedFile) {
+            $payload['cover_image'] = $payload['image']->store('book-covers', 'public');
+        } elseif ($removeImage) {
+            $payload['cover_image'] = null;
+        }
+
+        unset($payload['image']);
+
+        return $payload;
+    }
+
+    private function isStoredCoverImagePath(?string $coverImage): bool
+    {
+        if ($coverImage === null || $coverImage === '') {
+            return false;
+        }
+
+        return ! Str::startsWith($coverImage, ['http://', 'https://']);
     }
 }

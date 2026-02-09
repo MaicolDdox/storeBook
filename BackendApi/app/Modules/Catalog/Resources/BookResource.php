@@ -4,6 +4,8 @@ namespace App\Modules\Catalog\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 /**
  * @mixin \App\Models\Book
@@ -22,6 +24,7 @@ class BookResource extends JsonResource
             'title' => $this->title,
             'slug' => $this->slug,
             'cover_image' => $this->cover_image,
+            'cover_image_url' => $this->resolveCoverImageUrl(),
             'description' => $this->description,
             'author' => $this->author,
             'publisher' => $this->publisher,
@@ -33,5 +36,18 @@ class BookResource extends JsonResource
             'status' => $this->status,
             'category' => $this->whenLoaded('category', fn () => new CategoryResource($this->category)),
         ];
+    }
+
+    private function resolveCoverImageUrl(): ?string
+    {
+        if (! $this->cover_image) {
+            return null;
+        }
+
+        if (Str::startsWith($this->cover_image, ['http://', 'https://'])) {
+            return $this->cover_image;
+        }
+
+        return Storage::disk('public')->url($this->cover_image);
     }
 }
