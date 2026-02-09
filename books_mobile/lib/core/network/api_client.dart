@@ -69,6 +69,17 @@ class ApiClient {
     final statusCode = error.response?.statusCode;
     final body = error.response?.data;
 
+    if (error.type == DioExceptionType.connectionError ||
+        error.type == DioExceptionType.connectionTimeout ||
+        error.type == DioExceptionType.receiveTimeout ||
+        error.type == DioExceptionType.sendTimeout) {
+      return ApiException(
+        statusCode: statusCode,
+        message:
+            'Unable to reach the API server. Verify API_BASE_URL and that Laravel is running.',
+      );
+    }
+
     if (statusCode == 401) {
       return ApiException(
         statusCode: 401,

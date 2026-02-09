@@ -32,6 +32,32 @@ set(CMAKE_CXX_FLAGS_PROFILE "${CMAKE_CXX_FLAGS_RELEASE}")
 # Use Unicode for all projects.
 add_definitions(-DUNICODE -D_UNICODE)
 
+# Add ATL include directory for flutter_secure_storage_windows plugin
+# This is required because the plugin uses ATL headers (atlstr.h)
+# Robustly find ATL include directory
+# We search for the MSVC version directory specifically
+file(GLOB MSVC_DIRS "C:/Program Files/Microsoft Visual Studio/2022/*/VC/Tools/MSVC/*")
+set(ATLMFC_INCLUDE_DIR "")
+foreach(dir ${MSVC_DIRS})
+  if(IS_DIRECTORY "${dir}/atlmfc/include")
+    set(ATLMFC_INCLUDE_DIR "${dir}/atlmfc/include" CACHE PATH "ATL include directory" FORCE)
+    break()
+  endif()
+endforeach()
+
+if(ATLMFC_INCLUDE_DIR)
+  message(STATUS "Found ATL include directory: ${ATLMFC_INCLUDE_DIR}")
+else()
+  # Fallback to specific known path if glob fails
+  set(FALLBACK_PATH "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/atlmfc/include")
+  if(IS_DIRECTORY "${FALLBACK_PATH}")
+    set(ATLMFC_INCLUDE_DIR "${FALLBACK_PATH}" CACHE PATH "ATL include directory" FORCE)
+    message(STATUS "Using fallback ATL path: ${ATLMFC_INCLUDE_DIR}")
+  else()
+    message(WARNING "ATL include directory NOT found via search or fallback. Compilation will likely fail.")
+  endif()
+endif()
+
 # Compilation settings that should be applied to most targets.
 #
 # Be cautious about adding new options here, as plugins use this function by
@@ -43,6 +69,10 @@ function(APPLY_STANDARD_SETTINGS TARGET)
   target_compile_options(${TARGET} PRIVATE /EHsc)
   target_compile_definitions(${TARGET} PRIVATE "_HAS_EXCEPTIONS=0")
   target_compile_definitions(${TARGET} PRIVATE "$<$<CONFIG:Debug>:_DEBUG>")
+  # Add ATL include directory for flutter_secure_storage_windows plugin
+  if(DEFINED ATLMFC_INCLUDE_DIR)
+    target_include_directories(${TARGET} PRIVATE ${ATLMFC_INCLUDE_DIR})
+  endif()
 endfunction()
 
 # Flutter library and tool build rules.
@@ -85,6 +115,12 @@ if(PLUGIN_BUNDLED_LIBRARIES)
   install(FILES "${PLUGIN_BUNDLED_LIBRARIES}"
     DESTINATION "${INSTALL_BUNDLE_LIB_DIR}"
     COMPONENT Runtime)
+endif()
+
+# Explicitly fix flutter_secure_storage_windows_plugin missing ATL headers
+if(TARGET flutter_secure_storage_windows_plugin AND DEFINED ATLMFC_INCLUDE_DIR)
+  target_include_directories(flutter_secure_storage_windows_plugin PRIVATE ${ATLMFC_INCLUDE_DIR})
+  message(STATUS "Force added ATL include to flutter_secure_storage_windows_plugin: ${ATLMFC_INCLUDE_DIR}")
 endif()
 
 # Copy the native assets provided by the build.dart from all packages.

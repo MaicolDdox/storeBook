@@ -1,16 +1,17 @@
 # books_mobile
 
-A new Flutter project.
+Flutter mobile client for StoreBook.
 
-## Getting Started
+## API configuration
 
-This project is a starting point for a Flutter application.
+By default:
+- Android emulator uses `http://10.0.2.2:8000/api`
+- iOS/macOS/Windows/Linux use `http://127.0.0.1:8000/api`
 
-A few resources to get you started if this is your first Flutter project:
+You can override the API URL at runtime:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+```bash
+flutter run --dart-define=API_BASE_URL=http://192.168.1.10:8000/api
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Use this override when running on a physical device.
