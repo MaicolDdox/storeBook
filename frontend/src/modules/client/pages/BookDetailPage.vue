@@ -1,0 +1,79 @@
+<template>
+  <BaseCard v-if="catalogStore.currentBook">
+    <div class="grid gap-6 md:grid-cols-[280px_1fr]">
+      <div class="h-72 overflow-hidden rounded-xl bg-lightBlue">
+        <img
+          v-if="catalogStore.currentBook.cover_image"
+          :src="catalogStore.currentBook.cover_image"
+          :alt="catalogStore.currentBook.title"
+          class="h-full w-full object-cover"
+        />
+        <div v-else class="flex h-full items-center justify-center text-sm text-slate-500">
+          No cover
+        </div>
+      </div>
+
+      <div class="space-y-3">
+        <h1 class="text-2xl font-extrabold text-slate-800">{{ catalogStore.currentBook.title }}</h1>
+        <p class="text-sm text-slate-500">{{ catalogStore.currentBook.author }}</p>
+        <p class="text-sm text-slate-600">{{ catalogStore.currentBook.description }}</p>
+
+        <div class="grid gap-2 text-sm text-slate-600 sm:grid-cols-2">
+          <p><strong>Publisher:</strong> {{ catalogStore.currentBook.publisher || 'N/A' }}</p>
+          <p><strong>Year:</strong> {{ catalogStore.currentBook.published_year || 'N/A' }}</p>
+          <p><strong>Pages:</strong> {{ catalogStore.currentBook.page_count || 'N/A' }}</p>
+          <p><strong>Stock:</strong> {{ catalogStore.currentBook.stock_quantity }}</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 pt-3">
+          <p class="text-2xl font-extrabold text-brightBlue">
+            ${{ (catalogStore.currentBook.price_cents / 100).toFixed(2) }}
+          </p>
+          <label class="flex items-center gap-2 text-sm">
+            Qty
+            <input
+              v-model.number="quantity"
+              type="number"
+              min="1"
+              class="w-20 rounded-lg border border-sky-100 px-2 py-1"
+            />
+          </label>
+          <BaseButton @click="addToCart(catalogStore.currentBook.id)">
+            <ShoppingCartIcon class="h-4 w-4" />
+            Add to cart
+          </BaseButton>
+        </div>
+      </div>
+    </div>
+  </BaseCard>
+</template>
+
+<script setup>
+import { onMounted, ref } from 'vue'
+import { useRoute } from 'vue-router'
+import { ShoppingCartIcon } from '@heroicons/vue/24/solid'
+import BaseCard from '@/components/base/BaseCard.vue'
+import BaseButton from '@/components/base/BaseButton.vue'
+import { useCatalogStore } from '@/stores/catalog'
+import { useCartStore } from '@/stores/cart'
+import { useUiStore } from '@/stores/ui'
+
+const route = useRoute()
+const catalogStore = useCatalogStore()
+const cartStore = useCartStore()
+const uiStore = useUiStore()
+const quantity = ref(1)
+
+async function addToCart(bookId) {
+  try {
+    await cartStore.addItem(bookId, quantity.value)
+    uiStore.pushToast('Book added to cart.', 'success')
+  } catch {
+    uiStore.pushToast('Unable to add this quantity to cart.', 'error')
+  }
+}
+
+onMounted(async () => {
+  await catalogStore.fetchBook(route.params.id)
+})
+</script>

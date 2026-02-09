@@ -11,21 +11,19 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable =
-    [
-        'type_id',
+    protected $fillable = [
+        'genre_id',
         'name',
-        'descripccion',
+        'slug',
+        'description',
     ];
 
-    //Relacion con Type
-    public function types():BelongsTo
+    public function genre(): BelongsTo
     {
-        return $this->belongsTo(Type::class, 'type_id');
+        return $this->belongsTo(Genre::class);
     }
 
-    //Relacion con book
-    public function book():HasMany
+    public function books(): HasMany
     {
         return $this->hasMany(Book::class);
     }

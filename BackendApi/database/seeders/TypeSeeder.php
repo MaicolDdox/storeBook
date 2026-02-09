@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Genre;
 use Illuminate\Database\Seeder;
 
 class TypeSeeder extends Seeder
@@ -12,6 +12,16 @@ class TypeSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Genre::query()->firstOrCreate([
+            'name' => 'Fiction',
+        ], [
+            'description' => 'Fiction genre',
+        ]);
+
+        Genre::query()->firstOrCreate([
+            'name' => 'Non-Fiction',
+        ], [
+            'description' => 'Non-fiction genre',
+        ]);
     }
 }

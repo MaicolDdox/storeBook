@@ -1,54 +1,78 @@
 import { defineStore } from 'pinia'
-import api from '../plugins/axios'
+import { http } from '@/services/http'
+
+const TOKEN_KEY = 'storebook_token'
 
 export const useAuthStore = defineStore('auth', {
-  state: () => ({ user: null, loading: false }),
+  state: () => ({
+    token: localStorage.getItem(TOKEN_KEY),
+    user: null,
+    bootstrapped: false,
+  }),
+
+  getters: {
+    isAuthenticated: (state) => Boolean(state.token && state.user),
+    roleNames: (state) => state.user?.roles ?? [],
+    isAdmin: (state) => (state.user?.roles ?? []).includes('admin'),
+  },
 
   actions: {
-    // REGISTRO -> devuelve token; lo guardamos y ya quedas logueado
-    async register(name, email, password) {
-      this.loading = true
+    async bootstrap() {
+      if (this.bootstrapped) {
+        return
+      }
+
+      if (!this.token) {
+        this.bootstrapped = true
+        return
+      }
+
       try {
-        const { data } = await api.post('/api/auth/register', { name, email, password })
-        localStorage.setItem('token', data.token)
-        api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
-        this.user = data.user
-        return { ok: true }
-      } catch (error) {
-        const msg = error?.response?.data?.message || 'Error al registrar'
-        return { ok: false, message: msg }
-      } finally { this.loading = false }
+        const { data } = await http.get('/auth/me')
+        this.user = data.data
+      } catch {
+        this.clearSession()
+      } finally {
+        this.bootstrapped = true
+      }
     },
 
-    // LOGIN -> guarda token y header
-    async login(email, password) {
-      this.loading = true
-      try {
-        const { data } = await api.post('/api/auth/login', { email, password, device: 'web' })
-        localStorage.setItem('token', data.token)
-        api.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
-        this.user = data.user
-        return { ok: true }
-      } catch (error) {
-        const msg = error?.response?.data?.message || 'Error al iniciar sesión'
-        return { ok: false, message: msg }
-      } finally { this.loading = false }
+    async login(payload) {
+      const { data } = await http.post('/auth/login', payload)
+      this.token = data.data.token
+      this.user = data.data.user
+      this.persistToken()
+      return data
     },
 
-    // CARGAR PERFIL (si hay token)
-    async getUser() {
-      try {
-        const { data } = await api.get('/api/me')
-        this.user = data
-      } catch { this.user = null }
+    async register(payload) {
+      const { data } = await http.post('/auth/register', payload)
+      this.token = data.data.token
+      this.user = data.data.user
+      this.persistToken()
+      return data
     },
 
-    // LOGOUT -> revoca token en backend y limpia front
     async logout() {
-      try { await api.post('/api/auth/logout') } catch {}
-      localStorage.removeItem('token')
-      delete api.defaults.headers.common['Authorization']
+      try {
+        await http.post('/auth/logout')
+      } finally {
+        this.clearSession()
+      }
+    },
+
+    clearSession() {
+      this.token = null
       this.user = null
+      localStorage.removeItem(TOKEN_KEY)
+    },
+
+    persistToken() {
+      if (!this.token) {
+        localStorage.removeItem(TOKEN_KEY)
+        return
+      }
+      localStorage.setItem(TOKEN_KEY, this.token)
     },
   },
 })

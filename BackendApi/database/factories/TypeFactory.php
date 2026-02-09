@@ -2,23 +2,11 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Type>
+ * Legacy compatibility factory.
+ * Use GenreFactory for new tests and seeders.
  */
-class TypeFactory extends Factory
+class TypeFactory extends GenreFactory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
-    {
-        return [
-            'name' => fake()->randomElement(['ficcion', 'no ficcion']),
-            'descripccion' => fake()->text(255),
-        ];
-    }
+    protected $model = \App\Models\Type::class;
 }

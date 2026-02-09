@@ -13,29 +13,13 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('type_id')->constrained('types')->onDelete('CASCADE');
-            $table->enum('name', [
-                                    'Ciencia ficcion',
-                                    'Fantasia',
-                                    'Terror',
-                                    'Romance',
-                                    'Misterio y suspense',
-                                    'Novela negra',
-                                    'Thriller',
-                                    'Distopia',
-                                    'Western',
-                                    'Historia',
-                                    'Divulgacion cientifica',
-                                    'Autoayuda y superacion personal',
-                                    'Politica',
-                                    'Ciencias sociales',
-                                    'Memorias',
-                                    'Filosofia',
-                                    'Religion'
-                                ]);
-                                ;
-            $table->string('descripccion')->nullable();
+            $table->foreignId('genre_id')->constrained('genres')->restrictOnDelete();
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('description')->nullable();
             $table->timestamps();
+
+            $table->index('genre_id');
         });
     }
 

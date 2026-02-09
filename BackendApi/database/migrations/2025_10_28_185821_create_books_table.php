@@ -13,21 +13,22 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
-
-            //Relaciones con Category
-            $table->foreignId('category_id')->constrained('categories')->onDelete('CASCADE');
-
-            $table->string('titulo');
-            $table->string('foto');
-            $table->text('descripccion_larga');
-            $table->string('autor');
-            $table->string('editorial');
-            $table->string('year');
-            $table->string('numero_paginas');
-            $table->integer('stock');
-            $table->integer('precio');
-            $table->enum('estado', ['agotado', 'disponible'])->default('disponible');
+            $table->foreignId('category_id')->constrained('categories')->restrictOnDelete();
+            $table->string('title');
+            $table->string('slug')->unique();
+            $table->string('cover_image')->nullable();
+            $table->text('description');
+            $table->string('author');
+            $table->string('publisher')->nullable();
+            $table->unsignedSmallInteger('published_year')->nullable();
+            $table->unsignedSmallInteger('page_count')->nullable();
+            $table->unsignedInteger('stock_quantity')->default(0);
+            $table->unsignedInteger('price_cents');
+            $table->enum('status', ['available', 'out_of_stock', 'archived'])->default('available');
             $table->timestamps();
+
+            $table->index(['category_id', 'status']);
+            $table->index(['status', 'created_at']);
         });
     }
 

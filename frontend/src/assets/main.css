@@ -1,0 +1,17 @@
+@import 'tailwindcss';
+
+:root {
+  --light-blue: #e9f1fa;
+  --bright-blue: #00abe4;
+  --white: #ffffff;
+}
+
+body {
+  background-color: var(--light-blue);
+  color: #0f2940;
+  font-family: 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+}
+
+#app {
+  min-height: 100vh;
+}

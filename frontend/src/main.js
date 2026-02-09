@@ -1,17 +1,22 @@
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
-import App from './App.vue';
-import router from './router';
-import api from './plugins/axios';
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import App from './App.vue'
+import router from './router'
+import { http, setupHttpInterceptors } from './services/http'
+import { useAuthStore } from './stores/auth'
+import { useUiStore } from './stores/ui'
+import './assets/main.css'
 
-const app = createApp(App);
+const app = createApp(App)
+const pinia = createPinia()
 
-app.use(createPinia());
-app.use(router);
+app.use(pinia)
+app.use(router)
 
-//  inyectamos axios como $api
-app.config.globalProperties.$api = api;
+const authStore = useAuthStore(pinia)
+const uiStore = useUiStore(pinia)
 
-app.mount('#app');
+setupHttpInterceptors({ authStore, uiStore, router })
 
-
+app.provide('http', http)
+app.mount('#app')
