@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../features/auth/presentation/providers/auth_provider.dart';
-import '../features/cart/presentation/screens/cart_screen.dart';
-import '../features/catalog/presentation/screens/catalog_screen.dart';
-import '../features/orders/presentation/screens/orders_list_screen.dart';
+import '../modules/admin/presentation/screens/admin_shell.dart';
+import '../modules/admin/presentation/widgets/admin_route_guard.dart';
+import '../modules/client/presentation/screens/cart_screen.dart';
+import '../modules/client/presentation/screens/catalog_screen.dart';
+import '../modules/client/presentation/screens/orders_list_screen.dart';
 
 class MainShell extends ConsumerStatefulWidget {
   const MainShell({super.key});
@@ -22,11 +24,24 @@ class _MainShellState extends ConsumerState<MainShell> {
   @override
   Widget build(BuildContext context) {
     final titles = ['Catalog', 'Cart', 'Orders'];
+    final authState = ref.watch(authControllerProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(titles[_currentIndex]),
         actions: [
+          if (authState.isAdmin)
+            IconButton(
+              tooltip: 'Admin panel',
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AdminRouteGuard(child: AdminShell()),
+                  ),
+                );
+              },
+              icon: const Icon(Symbols.admin_panel_settings),
+            ),
           IconButton(
             tooltip: 'Logout',
             onPressed: () async {
