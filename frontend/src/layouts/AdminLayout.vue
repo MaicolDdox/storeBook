@@ -24,7 +24,7 @@
         <div class="mt-6 space-y-2">
           <router-link
             to="/"
-            class="block rounded-xl border border-sky-200 px-3 py-2 text-center text-xs font-semibold text-slate-700"
+            class="block rounded-xl border border-brightBlue bg-[#0097c9] px-3 py-2 text-center text-xs font-semibold text-white"
           >
             Open Client Area
           </router-link>

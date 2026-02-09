@@ -30,15 +30,14 @@ const props = defineProps({
 
 const buttonClasses = computed(() => {
   const base =
-    'inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2 text-sm font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed disabled:opacity-60'
+    "inline-flex items-center justify-center rounded-xl border-2 border-transparent border-brightBlue px-5 py-2.5 text-sm font-bold text-brightBlue transition hover:bg-lightBlue"
   const variants = {
     primary: [
-      'border-transparent bg-brightBlue text-white',
-      'hover:bg-[#0097c9] focus-visible:outline-brightBlue',
+      'border-transparent bg-[#0097c9] text-white',
     ].join(' '),
     secondary: [
-      'border-brightBlue bg-white text-brightBlue',
-      'hover:bg-lightBlue focus-visible:outline-brightBlue',
+      'border-brightBlue bg-brightBlue/15 text-slate-800',
+      'hover:bg-brightBlue hover:text-white focus-visible:outline-brightBlue',
     ].join(' '),
     danger: [
       'border-transparent bg-rose-600 text-white',

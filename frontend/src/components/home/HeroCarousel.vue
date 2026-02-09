@@ -53,7 +53,7 @@ import 'swiper/css/navigation'
 // Until then, image is empty and a neutral placeholder gradient is shown.
 const slides = [
   {
-    image: '',
+    image: '/imagenes/hero/1StoreBook.png',
     alt: 'Welcome to StoreBook',
     title: 'Welcome to StoreBook',
     subtitle: 'Discover your next favorite read from our curated collection.',

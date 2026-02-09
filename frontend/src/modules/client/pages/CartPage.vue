@@ -28,14 +28,18 @@
 
         <div class="flex items-center gap-2">
           <button
-            class="rounded-lg border border-sky-200 px-3 py-1"
+            type="button"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-brightBlue bg-brightBlue text-sm font-bold text-white transition hover:bg-[#0097c9]"
+            aria-label="Decrease quantity"
             @click="changeQty(item, item.quantity - 1)"
           >
             -
           </button>
-          <span class="w-6 text-center text-sm font-semibold">{{ item.quantity }}</span>
+          <span class="w-6 text-center text-sm font-semibold text-slate-800">{{ item.quantity }}</span>
           <button
-            class="rounded-lg border border-sky-200 px-3 py-1"
+            type="button"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-brightBlue bg-brightBlue text-sm font-bold text-white transition hover:bg-[#0097c9]"
+            aria-label="Increase quantity"
             @click="changeQty(item, item.quantity + 1)"
           >
             +

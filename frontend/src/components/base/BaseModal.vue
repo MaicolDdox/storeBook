@@ -8,7 +8,13 @@
       <div class="w-full max-w-lg rounded-2xl bg-white p-5 shadow-panel sm:p-6">
         <div class="mb-4 flex items-center justify-between">
           <h3 class="text-lg font-bold text-slate-800">{{ title }}</h3>
-          <button class="text-slate-500" @click="$emit('close')">Close</button>
+          <button
+          type="button"
+          class="rounded-lg px-3 py-1.5 text-sm font-semibold text-slate-600 transition hover:text-slate-800"
+          @click="$emit('close')"
+        >
+          Close
+        </button>
         </div>
         <slot />
       </div>

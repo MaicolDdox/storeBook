@@ -20,7 +20,7 @@
           </BaseBadge>
           <router-link
             :to="`/orders/${order.id}`"
-            class="rounded-lg border border-sky-200 px-3 py-1.5 text-xs font-semibold text-slate-700"
+            class="rounded-lg border border-brightBlue bg-brightBlue px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#0097c9]"
           >
             View details
           </router-link>

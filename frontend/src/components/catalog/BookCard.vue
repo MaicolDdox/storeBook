@@ -25,7 +25,7 @@
       <div class="flex items-center gap-2">
         <router-link
           :to="{ name: 'book-detail', params: { id: book.id } }"
-          class="rounded-lg border border-sky-200 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-lightBlue"
+          class="rounded-lg border border-brightBlue bg-brightBlue px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#0097c9]"
         >
           Details
         </router-link>

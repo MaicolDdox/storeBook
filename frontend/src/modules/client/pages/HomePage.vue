@@ -61,14 +61,14 @@
         <router-link
           v-if="!authStore.isAuthenticated"
           to="/login"
-          class="inline-flex items-center justify-center rounded-xl border border-transparent bg-brightBlue px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#0097c9]"
+          class="inline-flex items-center justify-center rounded-xl border-2 border-transparent border-brightBlue bg-white px-5 py-2.5 text-sm font-bold text-brightBlue transition hover:bg-lightBlue"
         >
           Sign in
         </router-link>
         <router-link
           v-if="!authStore.isAuthenticated"
           to="/register"
-          class="inline-flex items-center justify-center rounded-xl border-2 border-brightBlue bg-white px-5 py-2.5 text-sm font-bold text-brightBlue transition hover:bg-lightBlue"
+          class="inline-flex items-center justify-center rounded-xl border-2 border-transparent border-brightBlue bg-white px-5 py-2.5 text-sm font-bold text-brightBlue transition hover:bg-lightBlue"
         >
           Create account
         </router-link>

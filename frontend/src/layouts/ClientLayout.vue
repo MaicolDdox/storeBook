@@ -21,7 +21,7 @@
           <router-link
             v-if="authStore.isAdmin"
             to="/admin/dashboard"
-            class="rounded-lg border border-sky-200 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-lightBlue"
+            class="rounded-lg border border-brightBlue bg-brightBlue px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#0097c9]"
           >
             Admin
           </router-link>
@@ -38,7 +38,7 @@
           v-for="item in navLinks"
           :key="item.to"
           :to="item.to"
-          class="whitespace-nowrap rounded-lg bg-white px-3 py-1.5 text-xs font-semibold text-slate-700"
+          class="whitespace-nowrap rounded-lg bg-brightBlue px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#0097c9]"
         >
           {{ item.label }}
         </router-link>
