@@ -28,12 +28,7 @@
           >
             Open Client Area
           </router-link>
-          <button
-            class="w-full rounded-xl bg-brightBlue px-3 py-2 text-xs font-semibold text-white"
-            @click="logout"
-          >
-            Logout
-          </button>
+          <BaseButton class="w-full text-xs" @click="logout">Logout</BaseButton>
         </div>
       </aside>
 
@@ -52,6 +47,7 @@ import { useRouter } from 'vue-router'
 import {
   Squares2X2Icon,
   BookOpenIcon,
+  RectangleStackIcon,
   TagIcon,
   ClipboardDocumentListIcon,
 } from '@heroicons/vue/24/solid'
@@ -59,6 +55,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useUiStore } from '@/stores/ui'
 import ToastStack from '@/components/feedback/ToastStack.vue'
 import GlobalLoader from '@/components/feedback/GlobalLoader.vue'
+import BaseButton from '@/components/base/BaseButton.vue'
 
 const authStore = useAuthStore()
 const uiStore = useUiStore()
@@ -66,6 +63,7 @@ const router = useRouter()
 
 const links = [
   { label: 'Dashboard', to: '/admin/dashboard', icon: Squares2X2Icon },
+  { label: 'Types', to: '/admin/types', icon: RectangleStackIcon },
   { label: 'Books', to: '/admin/books', icon: BookOpenIcon },
   { label: 'Categories', to: '/admin/categories', icon: TagIcon },
   { label: 'Orders', to: '/admin/orders', icon: ClipboardDocumentListIcon },

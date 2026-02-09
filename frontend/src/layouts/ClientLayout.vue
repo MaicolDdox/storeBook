@@ -25,12 +25,7 @@
           >
             Admin
           </router-link>
-          <button
-            class="rounded-lg bg-brightBlue px-3 py-2 text-xs font-semibold text-white"
-            @click="logout"
-          >
-            Logout
-          </button>
+          <BaseButton class="text-xs" @click="logout">Logout</BaseButton>
         </div>
       </div>
 
@@ -63,6 +58,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useUiStore } from '@/stores/ui'
 import ToastStack from '@/components/feedback/ToastStack.vue'
 import GlobalLoader from '@/components/feedback/GlobalLoader.vue'
+import BaseButton from '@/components/base/BaseButton.vue'
 
 const authStore = useAuthStore()
 const uiStore = useUiStore()
