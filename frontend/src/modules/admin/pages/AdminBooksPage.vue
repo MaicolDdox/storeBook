@@ -6,7 +6,7 @@
           <h1 class="text-2xl font-extrabold text-slate-800">Manage Books</h1>
           <p class="text-sm text-slate-500">Create, update, and archive catalog books.</p>
         </div>
-        <BaseButton @click="openCreate">Add book</BaseButton>
+        <AppButton @click="openCreate">Add book</AppButton>
       </div>
     </BaseCard>
 
@@ -36,11 +36,11 @@
           <td class="px-4 py-3 text-sm text-slate-600">{{ book.stock_quantity }}</td>
           <td class="px-4 py-3">
             <div class="flex gap-2">
-              <BaseButton variant="secondary" class="px-2 py-1" @click="openEdit(book)"
-                >Edit</BaseButton
+              <AppButton variant="secondary" class="px-2 py-1" @click="openEdit(book)"
+                >Edit</AppButton
               >
-              <BaseButton variant="danger" class="px-2 py-1" @click="confirmDelete(book.id)"
-                >Delete</BaseButton
+              <AppButton variant="danger" class="px-2 py-1" @click="confirmDelete(book.id)"
+                >Delete</AppButton
               >
             </div>
           </td>
@@ -146,17 +146,17 @@
               alt="Book cover preview"
               class="h-28 w-20 rounded-lg border border-sky-100 object-cover"
             />
-            <BaseButton type="button" variant="secondary" @click="clearImage"
-              >Remove image</BaseButton
+            <AppButton type="button" variant="secondary" @click="clearImage"
+              >Remove image</AppButton
             >
           </div>
         </div>
 
         <div class="sm:col-span-2 flex justify-end gap-2">
-          <BaseButton variant="secondary" type="button" @click="closeModal">Cancel</BaseButton>
-          <BaseButton type="submit" :disabled="isSaving">{{
+          <AppButton variant="secondary" type="button" @click="closeModal">Cancel</AppButton>
+          <AppButton type="submit" :disabled="isSaving">{{
             editingId ? 'Save changes' : 'Create book'
-          }}</BaseButton>
+          }}</AppButton>
         </div>
       </form>
     </BaseModal>
@@ -166,7 +166,7 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import BaseCard from '@/components/base/BaseCard.vue'
-import BaseButton from '@/components/base/BaseButton.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import BaseModal from '@/components/base/BaseModal.vue'
 import BaseInput from '@/components/base/BaseInput.vue'

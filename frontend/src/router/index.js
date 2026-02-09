@@ -3,6 +3,7 @@ import { useAuthStore } from '@/stores/auth'
 import AuthLayout from '@/layouts/AuthLayout.vue'
 import ClientLayout from '@/layouts/ClientLayout.vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import HomePage from '@/modules/client/pages/HomePage.vue'
 import LoginPage from '@/modules/shared/pages/LoginPage.vue'
 import RegisterPage from '@/modules/shared/pages/RegisterPage.vue'
 import CatalogPage from '@/modules/client/pages/CatalogPage.vue'
@@ -22,10 +23,6 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      redirect: '/app/catalog',
-    },
-    {
-      path: '/',
       component: AuthLayout,
       children: [
         { path: 'login', name: 'login', component: LoginPage, meta: { guestOnly: true } },
@@ -33,16 +30,37 @@ const router = createRouter({
       ],
     },
     {
-      path: '/app',
+      path: '/',
       component: ClientLayout,
-      meta: { requiresAuth: true },
       children: [
+        { path: '', name: 'home', component: HomePage },
         { path: 'catalog', name: 'catalog', component: CatalogPage },
         { path: 'books/:id', name: 'book-detail', component: BookDetailPage, props: true },
-        { path: 'cart', name: 'cart', component: CartPage },
-        { path: 'checkout', name: 'checkout', component: CheckoutPage },
-        { path: 'orders', name: 'orders', component: OrdersPage },
-        { path: 'orders/:id', name: 'order-detail', component: OrderDetailPage, props: true },
+        {
+          path: 'cart',
+          name: 'cart',
+          component: CartPage,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'checkout',
+          name: 'checkout',
+          component: CheckoutPage,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'orders',
+          name: 'orders',
+          component: OrdersPage,
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'orders/:id',
+          name: 'order-detail',
+          component: OrderDetailPage,
+          props: true,
+          meta: { requiresAuth: true },
+        },
       ],
     },
     {
@@ -50,6 +68,7 @@ const router = createRouter({
       component: AdminLayout,
       meta: { requiresAuth: true, requiresAdmin: true },
       children: [
+        { path: '', redirect: { name: 'admin-dashboard' } },
         { path: 'dashboard', name: 'admin-dashboard', component: AdminDashboardPage },
         { path: 'types', name: 'admin-types', component: AdminTypesPage },
         { path: 'books', name: 'admin-books', component: AdminBooksPage },
@@ -65,15 +84,19 @@ router.beforeEach(async (to) => {
   await authStore.bootstrap()
 
   if (to.meta.requiresAuth && !authStore.token) {
-    return { name: 'login' }
+    return { name: 'login', query: { returnUrl: to.fullPath } }
   }
 
   if (to.meta.requiresAdmin && !authStore.isAdmin) {
-    return { name: 'catalog' }
+    return { name: 'home' }
   }
 
   if (to.meta.guestOnly && authStore.token) {
-    return authStore.isAdmin ? { name: 'admin-dashboard' } : { name: 'catalog' }
+    const returnUrl = to.query.returnUrl
+    if (returnUrl && !returnUrl.startsWith('/login') && !returnUrl.startsWith('/register')) {
+      return returnUrl
+    }
+    return authStore.isAdmin ? { name: 'admin-dashboard' } : { name: 'home' }
   }
 
   return true

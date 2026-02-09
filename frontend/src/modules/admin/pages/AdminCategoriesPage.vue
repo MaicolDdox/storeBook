@@ -6,7 +6,7 @@
           <h1 class="text-2xl font-extrabold text-slate-800">Manage Categories</h1>
           <p class="text-sm text-slate-500">Organize the catalog using genres and categories.</p>
         </div>
-        <BaseButton @click="openCreate">Add category</BaseButton>
+        <AppButton @click="openCreate">Add category</AppButton>
       </div>
     </BaseCard>
 
@@ -26,12 +26,12 @@
           <td class="px-4 py-3 text-sm text-slate-600">{{ category.genre?.name }}</td>
           <td class="px-4 py-3">
             <div class="flex gap-2">
-              <BaseButton variant="secondary" class="px-2 py-1" @click="openEdit(category)"
-                >Edit</BaseButton
+              <AppButton variant="secondary" class="px-2 py-1" @click="openEdit(category)"
+                >Edit</AppButton
               >
-              <BaseButton variant="danger" class="px-2 py-1" @click="removeCategory(category.id)">
+              <AppButton variant="danger" class="px-2 py-1" @click="removeCategory(category.id)">
                 Delete
-              </BaseButton>
+              </AppButton>
             </div>
           </td>
         </tr>
@@ -62,10 +62,10 @@
         <BaseInput v-model="form.description" label="Description" />
 
         <div class="flex justify-end gap-2">
-          <BaseButton variant="secondary" type="button" @click="closeModal">Cancel</BaseButton>
-          <BaseButton type="submit">{{
+          <AppButton variant="secondary" type="button" @click="closeModal">Cancel</AppButton>
+          <AppButton type="submit">{{
             editingId ? 'Save changes' : 'Create category'
-          }}</BaseButton>
+          }}</AppButton>
         </div>
       </form>
     </BaseModal>
@@ -75,7 +75,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import BaseCard from '@/components/base/BaseCard.vue'
-import BaseButton from '@/components/base/BaseButton.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import BasePagination from '@/components/base/BasePagination.vue'
 import BaseModal from '@/components/base/BaseModal.vue'

@@ -17,10 +17,10 @@
 
       <p v-if="error" class="text-sm font-medium text-rose-600">{{ error }}</p>
 
-      <BaseButton class="w-full" type="submit">
+      <AppButton class="w-full" type="submit">
         <UserPlusIcon class="h-4 w-4" />
         Register
-      </BaseButton>
+      </AppButton>
     </form>
 
     <p class="mt-5 text-center text-sm text-slate-600">
@@ -36,7 +36,7 @@ import { useRouter } from 'vue-router'
 import { UserPlusIcon } from '@heroicons/vue/24/solid'
 import BaseCard from '@/components/base/BaseCard.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
-import BaseButton from '@/components/base/BaseButton.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 import { useAuthStore } from '@/stores/auth'
 import { useUiStore } from '@/stores/ui'
 
@@ -57,7 +57,12 @@ async function submit() {
   try {
     await authStore.register(form)
     uiStore.pushToast('Account created successfully.', 'success')
-    await router.push('/app/catalog')
+    const returnUrl = router.currentRoute.value.query.returnUrl
+    if (returnUrl && typeof returnUrl === 'string' && !returnUrl.startsWith('/login')) {
+      await router.push(returnUrl)
+    } else {
+      await router.push(authStore.isAdmin ? '/admin/dashboard' : '/')
+    }
   } catch (requestError) {
     error.value = requestError.response?.data?.message ?? 'Unable to register this account.'
   }

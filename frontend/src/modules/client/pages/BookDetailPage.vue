@@ -35,13 +35,18 @@
               v-model.number="quantity"
               type="number"
               min="1"
-              class="w-20 rounded-lg border border-sky-100 px-2 py-1"
+              class="w-20 rounded-lg border border-sky-100 bg-white px-2 py-1 text-slate-800"
             />
           </label>
-          <BaseButton @click="addToCart(catalogStore.currentBook.id)">
-            <ShoppingCartIcon class="h-4 w-4" />
-            Add to cart
-          </BaseButton>
+          <div class="flex gap-2">
+            <AppButton :disabled="adding" @click="addToCart">
+              <ShoppingCartIcon class="h-4 w-4" />
+              Add to cart
+            </AppButton>
+            <AppButton variant="secondary" :disabled="adding" @click="buyNow">
+              Buy now
+            </AppButton>
+          </div>
         </div>
       </div>
     </div>
@@ -50,27 +55,55 @@
 
 <script setup>
 import { onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ShoppingCartIcon } from '@heroicons/vue/24/solid'
 import BaseCard from '@/components/base/BaseCard.vue'
-import BaseButton from '@/components/base/BaseButton.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 import { useCatalogStore } from '@/stores/catalog'
 import { useCartStore } from '@/stores/cart'
 import { useUiStore } from '@/stores/ui'
+import { useRequireAuthAction } from '@/composables/useRequireAuthAction'
 
 const route = useRoute()
+const router = useRouter()
 const catalogStore = useCatalogStore()
 const cartStore = useCartStore()
 const uiStore = useUiStore()
+const { executeWithAuth } = useRequireAuthAction()
 const quantity = ref(1)
+const adding = ref(false)
 
-async function addToCart(bookId) {
+async function doAddToCart() {
+  adding.value = true
   try {
-    await cartStore.addItem(bookId, quantity.value)
+    await cartStore.addItem(catalogStore.currentBook.id, quantity.value)
     uiStore.pushToast('Book added to cart.', 'success')
   } catch {
     uiStore.pushToast('Unable to add this quantity to cart.', 'error')
+  } finally {
+    adding.value = false
   }
+}
+
+function addToCart() {
+  executeWithAuth(doAddToCart, { bookId: catalogStore.currentBook?.id, action: 'add-to-cart' })
+}
+
+async function doBuyNow() {
+  adding.value = true
+  try {
+    await cartStore.addItem(catalogStore.currentBook.id, quantity.value)
+    uiStore.pushToast('Book added to cart.', 'success')
+    await router.push({ name: 'checkout' })
+  } catch {
+    uiStore.pushToast('Unable to add this quantity to cart.', 'error')
+  } finally {
+    adding.value = false
+  }
+}
+
+function buyNow() {
+  executeWithAuth(doBuyNow, { bookId: catalogStore.currentBook?.id, action: 'buy-now' })
 }
 
 onMounted(async () => {

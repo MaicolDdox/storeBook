@@ -4,6 +4,8 @@ export const useUiStore = defineStore('ui', {
   state: () => ({
     pendingRequests: 0,
     toasts: [],
+    loginModalOpen: false,
+    pendingAuthAction: null,
   }),
 
   getters: {
@@ -31,6 +33,27 @@ export const useUiStore = defineStore('ui', {
 
     removeToast(id) {
       this.toasts = this.toasts.filter((toast) => toast.id !== id)
+    },
+
+    setLoginModalOpen(open) {
+      this.loginModalOpen = open
+    },
+
+    setPendingAuthAction(action) {
+      this.pendingAuthAction = action
+    },
+
+    clearPendingAuthAction() {
+      this.pendingAuthAction = null
+    },
+
+    async runPendingAuthAction() {
+      if (!this.pendingAuthAction?.action) {
+        return
+      }
+      const fn = this.pendingAuthAction.action
+      this.clearPendingAuthAction()
+      await fn()
     },
   },
 })

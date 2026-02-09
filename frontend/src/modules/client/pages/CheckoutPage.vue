@@ -9,9 +9,9 @@
       <BaseCard>
         <div class="mb-3 flex items-center justify-between">
           <h2 class="text-lg font-bold text-slate-800">Saved addresses</h2>
-          <BaseButton variant="secondary" @click="showAddressForm = !showAddressForm">
+          <AppButton variant="secondary" @click="showAddressForm = !showAddressForm">
             {{ showAddressForm ? 'Hide form' : 'Add address' }}
-          </BaseButton>
+          </AppButton>
         </div>
 
         <div class="space-y-2">
@@ -41,7 +41,7 @@
           <BaseInput v-model="addressForm.postal_code" label="Postal code" />
           <BaseInput v-model="addressForm.country" label="Country code" />
           <div class="sm:col-span-2">
-            <BaseButton type="submit">Save address</BaseButton>
+            <AppButton type="submit">Save address</AppButton>
           </div>
         </form>
       </BaseCard>
@@ -75,8 +75,8 @@
         <p class="text-sm text-slate-500">Subtotal</p>
         <p class="text-2xl font-extrabold text-brightBlue">${{ cartStore.subtotal }}</p>
       </div>
-      <BaseButton class="w-full" :disabled="!canCheckout" @click="placeOrder"
-        >Place order</BaseButton
+      <AppButton class="w-full" :disabled="!canCheckout" @click="placeOrder"
+        >Place order</AppButton
       >
     </BaseCard>
   </div>
@@ -86,7 +86,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import BaseCard from '@/components/base/BaseCard.vue'
-import BaseButton from '@/components/base/BaseButton.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
 import { useOrdersStore } from '@/stores/orders'
 import { useCartStore } from '@/stores/cart'
@@ -140,7 +140,7 @@ async function placeOrder() {
     })
     await cartStore.fetchCart()
     uiStore.pushToast('Order placed successfully.', 'success')
-    await router.push(`/app/orders/${order.id}`)
+    await router.push(`/orders/${order.id}`)
   } catch {
     uiStore.pushToast('Unable to place order.', 'error')
   }

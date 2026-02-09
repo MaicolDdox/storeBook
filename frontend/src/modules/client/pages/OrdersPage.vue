@@ -19,7 +19,7 @@
             {{ order.status }}
           </BaseBadge>
           <router-link
-            :to="`/app/orders/${order.id}`"
+            :to="`/orders/${order.id}`"
             class="rounded-lg border border-sky-200 px-3 py-1.5 text-xs font-semibold text-slate-700"
           >
             View details

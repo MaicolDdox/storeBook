@@ -4,26 +4,26 @@
       Page {{ pagination.current_page }} of {{ pagination.last_page }}
     </p>
     <div class="flex items-center gap-2">
-      <BaseButton
+      <AppButton
         variant="secondary"
         :disabled="pagination.current_page <= 1"
         @click="$emit('change', pagination.current_page - 1)"
       >
         Previous
-      </BaseButton>
-      <BaseButton
+      </AppButton>
+      <AppButton
         variant="secondary"
         :disabled="pagination.current_page >= pagination.last_page"
         @click="$emit('change', pagination.current_page + 1)"
       >
         Next
-      </BaseButton>
+      </AppButton>
     </div>
   </div>
 </template>
 
 <script setup>
-import BaseButton from '@/components/base/BaseButton.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 
 defineProps({
   pagination: {

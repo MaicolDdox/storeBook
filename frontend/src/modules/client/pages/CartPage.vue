@@ -6,13 +6,13 @@
           <h1 class="text-2xl font-extrabold text-slate-800">Your Cart</h1>
           <p class="text-sm text-slate-500">Review and update your selected books.</p>
         </div>
-        <BaseButton
+        <AppButton
           variant="secondary"
           :disabled="!cartStore.hasItems"
           @click="cartStore.clearCart()"
         >
           Clear cart
-        </BaseButton>
+        </AppButton>
       </div>
     </BaseCard>
 
@@ -42,7 +42,7 @@
           </button>
         </div>
 
-        <BaseButton variant="danger" @click="remove(item.id)">Remove</BaseButton>
+        <AppButton variant="danger" @click="remove(item.id)">Remove</AppButton>
       </div>
     </BaseCard>
 
@@ -56,8 +56,8 @@
           <p class="text-sm text-slate-500">Subtotal</p>
           <p class="text-2xl font-extrabold text-brightBlue">${{ cartStore.subtotal }}</p>
         </div>
-        <router-link to="/app/checkout">
-          <BaseButton>Go to checkout</BaseButton>
+        <router-link to="/checkout">
+          <AppButton>Go to checkout</AppButton>
         </router-link>
       </div>
     </BaseCard>
@@ -67,7 +67,7 @@
 <script setup>
 import { onMounted } from 'vue'
 import BaseCard from '@/components/base/BaseCard.vue'
-import BaseButton from '@/components/base/BaseButton.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 import { useCartStore } from '@/stores/cart'
 import { useUiStore } from '@/stores/ui'
 

@@ -23,12 +23,12 @@
 
         <div class="mt-6 space-y-2">
           <router-link
-            to="/app/catalog"
+            to="/"
             class="block rounded-xl border border-sky-200 px-3 py-2 text-center text-xs font-semibold text-slate-700"
           >
             Open Client Area
           </router-link>
-          <BaseButton class="w-full text-xs" @click="logout">Logout</BaseButton>
+          <AppButton class="w-full text-xs" @click="logout">Logout</AppButton>
         </div>
       </aside>
 
@@ -55,7 +55,7 @@ import { useAuthStore } from '@/stores/auth'
 import { useUiStore } from '@/stores/ui'
 import ToastStack from '@/components/feedback/ToastStack.vue'
 import GlobalLoader from '@/components/feedback/GlobalLoader.vue'
-import BaseButton from '@/components/base/BaseButton.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 
 const authStore = useAuthStore()
 const uiStore = useUiStore()

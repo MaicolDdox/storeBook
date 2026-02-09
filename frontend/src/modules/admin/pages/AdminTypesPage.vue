@@ -6,7 +6,7 @@
           <h1 class="text-2xl font-extrabold text-slate-800">Manage Types</h1>
           <p class="text-sm text-slate-500">Create and maintain catalog book types.</p>
         </div>
-        <BaseButton @click="openCreate">Add type</BaseButton>
+        <AppButton @click="openCreate">Add type</AppButton>
       </div>
     </BaseCard>
 
@@ -25,11 +25,11 @@
           <td class="px-4 py-3 text-sm text-slate-600">{{ type.description || 'N/A' }}</td>
           <td class="px-4 py-3">
             <div class="flex gap-2">
-              <BaseButton variant="secondary" class="px-2 py-1" @click="openEdit(type)"
-                >Edit</BaseButton
+              <AppButton variant="secondary" class="px-2 py-1" @click="openEdit(type)"
+                >Edit</AppButton
               >
-              <BaseButton variant="danger" class="px-2 py-1" @click="removeType(type.id)"
-                >Delete</BaseButton
+              <AppButton variant="danger" class="px-2 py-1" @click="removeType(type.id)"
+                >Delete</AppButton
               >
             </div>
           </td>
@@ -52,8 +52,8 @@
         <BaseInput v-model="form.description" label="Description" />
 
         <div class="flex justify-end gap-2">
-          <BaseButton variant="secondary" type="button" @click="closeModal">Cancel</BaseButton>
-          <BaseButton type="submit">{{ editingId ? 'Save changes' : 'Create type' }}</BaseButton>
+          <AppButton variant="secondary" type="button" @click="closeModal">Cancel</AppButton>
+          <AppButton type="submit">{{ editingId ? 'Save changes' : 'Create type' }}</AppButton>
         </div>
       </form>
     </BaseModal>
@@ -63,7 +63,7 @@
 <script setup>
 import { onMounted, reactive, ref } from 'vue'
 import BaseCard from '@/components/base/BaseCard.vue'
-import BaseButton from '@/components/base/BaseButton.vue'
+import AppButton from '@/components/ui/AppButton.vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import BasePagination from '@/components/base/BasePagination.vue'
 import BaseModal from '@/components/base/BaseModal.vue'
