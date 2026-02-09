@@ -7,7 +7,6 @@ export const http = axios.create({
   baseURL: `${normalizedHost}/api`,
   headers: {
     Accept: 'application/json',
-    'Content-Type': 'application/json',
   },
 })
 

@@ -13,6 +13,7 @@ import OrdersPage from '@/modules/client/pages/OrdersPage.vue'
 import OrderDetailPage from '@/modules/client/pages/OrderDetailPage.vue'
 import AdminDashboardPage from '@/modules/admin/pages/AdminDashboardPage.vue'
 import AdminBooksPage from '@/modules/admin/pages/AdminBooksPage.vue'
+import AdminTypesPage from '@/modules/admin/pages/AdminTypesPage.vue'
 import AdminCategoriesPage from '@/modules/admin/pages/AdminCategoriesPage.vue'
 import AdminOrdersPage from '@/modules/admin/pages/AdminOrdersPage.vue'
 
@@ -50,6 +51,7 @@ const router = createRouter({
       meta: { requiresAuth: true, requiresAdmin: true },
       children: [
         { path: 'dashboard', name: 'admin-dashboard', component: AdminDashboardPage },
+        { path: 'types', name: 'admin-types', component: AdminTypesPage },
         { path: 'books', name: 'admin-books', component: AdminBooksPage },
         { path: 'categories', name: 'admin-categories', component: AdminCategoriesPage },
         { path: 'orders', name: 'admin-orders', component: AdminOrdersPage },
