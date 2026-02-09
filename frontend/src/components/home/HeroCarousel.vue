@@ -47,25 +47,21 @@ import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
 
-// Replace these images by adding files to /public/images/hero/ and updating this array.
-// Example: slide-1.jpg, slide-2.jpg, slide-3.jpg in /public/images/hero/
-// Then use: { image: '/images/hero/slide-1.jpg', alt: 'Welcome', title: '...', subtitle: '...' }
-// Until then, image is empty and a neutral placeholder gradient is shown.
 const slides = [
   {
-    image: '/imagenes/hero/1StoreBook.png',
+    image: '/images/hero/1StoreBook.png',
     alt: 'Welcome to StoreBook',
     title: 'Welcome to StoreBook',
     subtitle: 'Discover your next favorite read from our curated collection.',
   },
   {
-    image: '',
+    image: '/images/hero/2StoreBook.png',
     alt: 'New arrivals',
     title: 'New Arrivals',
     subtitle: 'Explore our latest additions to the catalog.',
   },
   {
-    image: '',
+    image: '/images/hero/3StoreBook.png',
     alt: 'Browse the catalog',
     title: 'Browse the Catalog',
     subtitle: 'Find books across all genres and categories.',
