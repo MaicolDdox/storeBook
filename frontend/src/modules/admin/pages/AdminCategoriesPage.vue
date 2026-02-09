@@ -26,12 +26,8 @@
           <td class="px-4 py-3 text-sm text-slate-600">{{ category.genre?.name }}</td>
           <td class="px-4 py-3">
             <div class="flex gap-2">
-              <AppButton variant="secondary" class="px-2 py-1" @click="openEdit(category)"
-                >Edit</AppButton
-              >
-              <AppButton variant="danger" class="px-2 py-1" @click="removeCategory(category.id)">
-                Delete
-              </AppButton>
+              <AdminEditButton aria-label="Edit category" @click="openEdit(category)" />
+              <AdminDeleteButton aria-label="Delete category" @click="removeCategory(category.id)" />
             </div>
           </td>
         </tr>
@@ -76,6 +72,8 @@
 import { onMounted, reactive, ref } from 'vue'
 import BaseCard from '@/components/base/BaseCard.vue'
 import AppButton from '@/components/ui/AppButton.vue'
+import AdminEditButton from '@/components/admin/AdminEditButton.vue'
+import AdminDeleteButton from '@/components/admin/AdminDeleteButton.vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import BasePagination from '@/components/base/BasePagination.vue'
 import BaseModal from '@/components/base/BaseModal.vue'

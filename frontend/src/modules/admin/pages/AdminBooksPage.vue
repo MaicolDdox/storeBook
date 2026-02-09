@@ -36,12 +36,8 @@
           <td class="px-4 py-3 text-sm text-slate-600">{{ book.stock_quantity }}</td>
           <td class="px-4 py-3">
             <div class="flex gap-2">
-              <AppButton variant="secondary" class="px-2 py-1" @click="openEdit(book)"
-                >Edit</AppButton
-              >
-              <AppButton variant="danger" class="px-2 py-1" @click="confirmDelete(book.id)"
-                >Delete</AppButton
-              >
+              <AdminEditButton aria-label="Edit book" @click="openEdit(book)" />
+              <AdminDeleteButton aria-label="Delete book" @click="confirmDelete(book.id)" />
             </div>
           </td>
         </tr>
@@ -167,6 +163,8 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import BaseCard from '@/components/base/BaseCard.vue'
 import AppButton from '@/components/ui/AppButton.vue'
+import AdminEditButton from '@/components/admin/AdminEditButton.vue'
+import AdminDeleteButton from '@/components/admin/AdminDeleteButton.vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import BaseModal from '@/components/base/BaseModal.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
