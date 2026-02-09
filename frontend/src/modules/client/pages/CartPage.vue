@@ -35,7 +35,9 @@
           >
             -
           </button>
-          <span class="w-6 text-center text-sm font-semibold text-slate-800">{{ item.quantity }}</span>
+          <span class="w-6 text-center text-sm font-semibold text-slate-800">{{
+            item.quantity
+          }}</span>
           <button
             type="button"
             class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-brightBlue bg-brightBlue text-sm font-bold text-white transition hover:bg-[#0097c9]"

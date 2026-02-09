@@ -27,7 +27,10 @@
           <td class="px-4 py-3">
             <div class="flex gap-2">
               <AdminEditButton aria-label="Edit category" @click="openEdit(category)" />
-              <AdminDeleteButton aria-label="Delete category" @click="removeCategory(category.id)" />
+              <AdminDeleteButton
+                aria-label="Delete category"
+                @click="removeCategory(category.id)"
+              />
             </div>
           </td>
         </tr>
@@ -59,9 +62,7 @@
 
         <div class="flex justify-end gap-2">
           <AppButton variant="secondary" type="button" @click="closeModal">Cancel</AppButton>
-          <AppButton type="submit">{{
-            editingId ? 'Save changes' : 'Create category'
-          }}</AppButton>
+          <AppButton type="submit">{{ editingId ? 'Save changes' : 'Create category' }}</AppButton>
         </div>
       </form>
     </BaseModal>

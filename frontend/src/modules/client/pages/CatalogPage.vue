@@ -24,7 +24,9 @@
       @add-to-cart="handleAddToCart"
     />
 
-    <CatalogEmpty v-if="!catalogStore.loading && !catalogStore.error && catalogStore.books.length === 0" />
+    <CatalogEmpty
+      v-if="!catalogStore.loading && !catalogStore.error && catalogStore.books.length === 0"
+    />
 
     <BasePagination
       v-if="catalogStore.books.length > 0"

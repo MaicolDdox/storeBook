@@ -19,12 +19,15 @@ class BookResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $coverImageUrl = $this->resolveCoverImageUrl($request);
+
         return [
             'id' => $this->id,
             'title' => $this->title,
             'slug' => $this->slug,
             'cover_image' => $this->cover_image,
-            'cover_image_url' => $this->resolveCoverImageUrl(),
+            'cover_image_url' => $coverImageUrl,
+            'coverImageUrl' => $coverImageUrl,
             'description' => $this->description,
             'author' => $this->author,
             'publisher' => $this->publisher,
@@ -38,16 +41,34 @@ class BookResource extends JsonResource
         ];
     }
 
-    private function resolveCoverImageUrl(): ?string
+    private function resolveCoverImageUrl(Request $request): ?string
     {
-        if (! $this->cover_image) {
+        $coverImage = (string) ($this->cover_image ?? '');
+        if ($coverImage === '') {
             return null;
         }
 
-        if (Str::startsWith($this->cover_image, ['http://', 'https://'])) {
-            return $this->cover_image;
+        if (Str::startsWith($coverImage, ['http://', 'https://'])) {
+            return $coverImage;
         }
 
-        return Storage::disk('public')->url($this->cover_image);
+        $normalizedPath = ltrim($coverImage, '/');
+        if (Str::startsWith($normalizedPath, 'storage/')) {
+            $normalizedPath = Str::after($normalizedPath, 'storage/');
+        }
+        if (Str::startsWith($normalizedPath, 'public/')) {
+            $normalizedPath = Str::after($normalizedPath, 'public/');
+        }
+
+        $storageUrl = Storage::disk('public')->url($normalizedPath);
+        $storagePath = Str::startsWith($storageUrl, ['http://', 'https://'])
+            ? (string) parse_url($storageUrl, PHP_URL_PATH)
+            : $storageUrl;
+
+        if ($storagePath === '') {
+            return null;
+        }
+
+        return $request->getSchemeAndHttpHost().'/'.ltrim($storagePath, '/');
     }
 }

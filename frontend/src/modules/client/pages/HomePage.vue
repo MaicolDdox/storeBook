@@ -14,10 +14,7 @@
         />
         <AppButton @click="goToCatalog">Search</AppButton>
       </div>
-      <router-link
-        to="/catalog"
-        class="text-sm font-semibold text-brightBlue hover:underline"
-      >
+      <router-link to="/catalog" class="text-sm font-semibold text-brightBlue hover:underline">
         Browse full catalog
       </router-link>
     </section>
@@ -25,10 +22,7 @@
     <section>
       <div class="mb-6 flex items-center justify-between">
         <h2 class="text-xl font-extrabold text-slate-800">New Arrivals</h2>
-        <router-link
-          to="/catalog"
-          class="text-sm font-semibold text-brightBlue hover:underline"
-        >
+        <router-link to="/catalog" class="text-sm font-semibold text-brightBlue hover:underline">
           View all
         </router-link>
       </div>

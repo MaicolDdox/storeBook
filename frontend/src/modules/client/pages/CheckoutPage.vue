@@ -75,9 +75,7 @@
         <p class="text-sm text-slate-500">Subtotal</p>
         <p class="text-2xl font-extrabold text-brightBlue">${{ cartStore.subtotal }}</p>
       </div>
-      <AppButton class="w-full" :disabled="!canCheckout" @click="placeOrder"
-        >Place order</AppButton
-      >
+      <AppButton class="w-full" :disabled="!canCheckout" @click="placeOrder">Place order</AppButton>
     </BaseCard>
   </div>
 </template>

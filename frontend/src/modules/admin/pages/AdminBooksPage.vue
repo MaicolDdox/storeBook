@@ -171,6 +171,7 @@ import BaseInput from '@/components/base/BaseInput.vue'
 import BasePagination from '@/components/base/BasePagination.vue'
 import { http } from '@/services/http'
 import { useUiStore } from '@/stores/ui'
+import { resolveAssetUrl } from '@/shared/utils/resolveAssetUrl'
 
 const uiStore = useUiStore()
 
@@ -293,7 +294,9 @@ function openEdit(book) {
   })
 
   syncCategoryWithGenre()
-  setPreviewImage(book.cover_image_url ?? book.cover_image ?? '')
+  setPreviewImage(
+    resolveAssetUrl(book.coverImageUrl ?? book.cover_image_url ?? book.cover_image) ?? '',
+  )
   modalOpen.value = true
 }
 

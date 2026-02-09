@@ -61,13 +61,16 @@ class AdminBookImageUploadTest extends TestCase
         $response
             ->assertCreated()
             ->assertJsonPath('success', true)
-            ->assertJsonPath('data.title', 'Admin Upload Test');
+            ->assertJsonPath('data.title', 'Admin Upload Test')
+            ->assertJsonPath('data.coverImageUrl', $response->json('data.cover_image_url'));
 
         $coverImagePath = $response->json('data.cover_image');
         $coverImageUrl = $response->json('data.cover_image_url');
 
         $this->assertNotEmpty($coverImagePath);
         $this->assertNotEmpty($coverImageUrl);
+        $this->assertStringStartsWith('books/covers/', $coverImagePath);
+        $this->assertStringStartsWith('http', $coverImageUrl);
         Storage::disk('public')->assertExists($coverImagePath);
     }
 }

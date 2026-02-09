@@ -1,10 +1,5 @@
 <template>
-  <button
-    v-bind="$attrs"
-    :type="type"
-    :disabled="disabled"
-    :class="buttonClasses"
-  >
+  <button v-bind="$attrs" :type="type" :disabled="disabled" :class="buttonClasses">
     <slot />
   </button>
 </template>
@@ -30,14 +25,12 @@ const props = defineProps({
 
 const buttonClasses = computed(() => {
   const base =
-    "inline-flex items-center justify-center rounded-xl border-2 border-transparent border-brightBlue px-5 py-2.5 text-sm font-bold text-brightBlue transition hover:bg-lightBlue"
+    'inline-flex items-center justify-center rounded-xl border-2 border-transparent border-brightBlue px-5 py-2.5 text-sm font-bold text-brightBlue transition hover:bg-lightBlue'
   const variants = {
-    primary: [
-      'border-transparent bg-[#0097c9] text-white',
-    ].join(' '),
+    primary: ['border-transparent bg-[#0097c9] text-white'].join(' '),
     secondary: [
       'border-brightBlue bg-brightBlue/15 text-slate-800',
-      'hover:bg-brightBlue hover:text-white focus-visible:outline-brightBlue',
+      'hover:bg-brightBlue hover:text-gray-500 focus-visible:outline-brightBlue',
     ].join(' '),
     danger: [
       'border-transparent bg-rose-600 text-white',

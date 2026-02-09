@@ -2,9 +2,7 @@
   <div class="min-h-screen bg-lightBlue">
     <header class="border-b border-sky-100 bg-white/90 backdrop-blur-sm">
       <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-3 sm:px-6">
-        <router-link to="/" class="text-lg font-extrabold text-slate-800">
-          StoreBook
-        </router-link>
+        <router-link to="/" class="text-lg font-extrabold text-slate-800"> StoreBook </router-link>
 
         <nav class="hidden items-center gap-2 sm:flex">
           <router-link

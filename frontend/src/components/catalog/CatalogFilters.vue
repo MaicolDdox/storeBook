@@ -13,14 +13,12 @@
         <select
           :value="filters.category_id"
           class="w-full rounded-xl border border-sky-100 bg-white px-3 py-2 text-sm outline-none focus:border-brightBlue"
-          @change="$emit('update:categoryId', $event.target.value ? Number($event.target.value) : null)"
+          @change="
+            $emit('update:categoryId', $event.target.value ? Number($event.target.value) : null)
+          "
         >
           <option :value="null">All categories</option>
-          <option
-            v-for="category in categories"
-            :key="category.id"
-            :value="category.id"
-          >
+          <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.name }}
           </option>
         </select>
@@ -30,7 +28,9 @@
         <select
           :value="filters.genre_id"
           class="w-full rounded-xl border border-sky-100 bg-white px-3 py-2 text-sm outline-none focus:border-brightBlue"
-          @change="$emit('update:genreId', $event.target.value ? Number($event.target.value) : null)"
+          @change="
+            $emit('update:genreId', $event.target.value ? Number($event.target.value) : null)
+          "
         >
           <option :value="null">All genres</option>
           <option v-for="genre in genres" :key="genre.id" :value="genre.id">
@@ -40,9 +40,7 @@
       </label>
       <div class="flex items-end gap-2">
         <AppButton class="flex-1" @click="$emit('apply')">Filter</AppButton>
-        <AppButton variant="secondary" class="flex-1" @click="$emit('reset')">
-          Reset
-        </AppButton>
+        <AppButton variant="secondary" class="flex-1" @click="$emit('reset')"> Reset </AppButton>
       </div>
     </div>
   </BaseCard>

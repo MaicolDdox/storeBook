@@ -3,14 +3,11 @@
     <div class="grid gap-6 md:grid-cols-[280px_1fr]">
       <div class="h-72 overflow-hidden rounded-xl bg-lightBlue">
         <img
-          v-if="catalogStore.currentBook.cover_image"
-          :src="catalogStore.currentBook.cover_image"
-          :alt="catalogStore.currentBook.title"
+          :src="coverSource"
+          :alt="`Cover image for ${catalogStore.currentBook.title}`"
           class="h-full w-full object-cover"
+          @error="handleCoverImageError"
         />
-        <div v-else class="flex h-full items-center justify-center text-sm text-slate-500">
-          No cover
-        </div>
       </div>
 
       <div class="space-y-3">
@@ -43,9 +40,7 @@
               <ShoppingCartIcon class="h-4 w-4" />
               Add to cart
             </AppButton>
-            <AppButton variant="secondary" :disabled="adding" @click="buyNow">
-              Buy now
-            </AppButton>
+            <AppButton variant="secondary" :disabled="adding" @click="buyNow"> Buy now </AppButton>
           </div>
         </div>
       </div>
@@ -54,7 +49,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ShoppingCartIcon } from '@heroicons/vue/24/solid'
 import BaseCard from '@/components/base/BaseCard.vue'
@@ -63,6 +58,7 @@ import { useCatalogStore } from '@/stores/catalog'
 import { useCartStore } from '@/stores/cart'
 import { useUiStore } from '@/stores/ui'
 import { useRequireAuthAction } from '@/composables/useRequireAuthAction'
+import { resolveAssetUrl } from '@/shared/utils/resolveAssetUrl'
 
 const route = useRoute()
 const router = useRouter()
@@ -72,6 +68,19 @@ const uiStore = useUiStore()
 const { executeWithAuth } = useRequireAuthAction()
 const quantity = ref(1)
 const adding = ref(false)
+const PLACEHOLDER_COVER = '/images/placeholders/book-cover.png'
+
+const coverSource = computed(() => {
+  const book = catalogStore.currentBook
+  if (!book) {
+    return PLACEHOLDER_COVER
+  }
+
+  return (
+    resolveAssetUrl(book.coverImageUrl ?? book.cover_image_url ?? book.cover_image) ??
+    PLACEHOLDER_COVER
+  )
+})
 
 async function doAddToCart() {
   adding.value = true
@@ -104,6 +113,20 @@ async function doBuyNow() {
 
 function buyNow() {
   executeWithAuth(doBuyNow, { bookId: catalogStore.currentBook?.id, action: 'buy-now' })
+}
+
+function handleCoverImageError(event) {
+  const imageElement = event.target
+  if (!(imageElement instanceof HTMLImageElement)) {
+    return
+  }
+
+  if (imageElement.dataset.fallbackApplied === 'true') {
+    return
+  }
+
+  imageElement.dataset.fallbackApplied = 'true'
+  imageElement.src = PLACEHOLDER_COVER
 }
 
 onMounted(async () => {

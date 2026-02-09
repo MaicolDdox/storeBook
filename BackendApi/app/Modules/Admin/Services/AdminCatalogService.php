@@ -115,7 +115,7 @@ class AdminCatalogService
             $payload['cover_image'] !== $oldCoverImage &&
             $this->isStoredCoverImagePath($oldCoverImage)
         ) {
-            Storage::disk('public')->delete($oldCoverImage);
+            $this->deleteCoverImageFromPublicDisk($oldCoverImage);
         }
 
         return $book->fresh('category.genre');
@@ -124,7 +124,7 @@ class AdminCatalogService
     public function deleteBook(Book $book): void
     {
         if ($this->isStoredCoverImagePath($book->cover_image)) {
-            Storage::disk('public')->delete($book->cover_image);
+            $this->deleteCoverImageFromPublicDisk($book->cover_image);
         }
 
         $book->delete();
@@ -177,7 +177,7 @@ class AdminCatalogService
         unset($payload['remove_image']);
 
         if (isset($payload['image']) && $payload['image'] instanceof UploadedFile) {
-            $payload['cover_image'] = $payload['image']->store('book-covers', 'public');
+            $payload['cover_image'] = $payload['image']->store('books/covers', 'public');
         } elseif ($removeImage) {
             $payload['cover_image'] = null;
         }
@@ -194,5 +194,24 @@ class AdminCatalogService
         }
 
         return ! Str::startsWith($coverImage, ['http://', 'https://']);
+    }
+
+    private function deleteCoverImageFromPublicDisk(?string $coverImage): void
+    {
+        if ($coverImage === null || $coverImage === '') {
+            return;
+        }
+
+        $normalizedPath = ltrim($coverImage, '/');
+        if (Str::startsWith($normalizedPath, 'storage/')) {
+            $normalizedPath = Str::after($normalizedPath, 'storage/');
+        }
+        if (Str::startsWith($normalizedPath, 'public/')) {
+            $normalizedPath = Str::after($normalizedPath, 'public/');
+        }
+
+        if ($normalizedPath !== '') {
+            Storage::disk('public')->delete($normalizedPath);
+        }
     }
 }

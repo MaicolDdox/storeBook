@@ -28,13 +28,23 @@
       <BaseCard>
         <h2 class="mb-4 text-lg font-bold text-slate-800">Orders Over Time</h2>
         <div class="h-64">
-          <v-chart v-if="ordersChartOption" :option="ordersChartOption" autoresize class="h-full w-full" />
+          <v-chart
+            v-if="ordersChartOption"
+            :option="ordersChartOption"
+            autoresize
+            class="h-full w-full"
+          />
         </div>
       </BaseCard>
       <BaseCard>
         <h2 class="mb-4 text-lg font-bold text-slate-800">Order Status Distribution</h2>
         <div class="h-64">
-          <v-chart v-if="statusChartOption" :option="statusChartOption" autoresize class="h-full w-full" />
+          <v-chart
+            v-if="statusChartOption"
+            :option="statusChartOption"
+            autoresize
+            class="h-full w-full"
+          />
         </div>
       </BaseCard>
     </div>
@@ -43,7 +53,12 @@
       <BaseCard>
         <h2 class="mb-4 text-lg font-bold text-slate-800">Top Categories</h2>
         <div class="h-64">
-          <v-chart v-if="categoriesChartOption" :option="categoriesChartOption" autoresize class="h-full w-full" />
+          <v-chart
+            v-if="categoriesChartOption"
+            :option="categoriesChartOption"
+            autoresize
+            class="h-full w-full"
+          />
         </div>
       </BaseCard>
       <BaseCard>
@@ -113,7 +128,16 @@ import BaseCard from '@/components/base/BaseCard.vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import { adminApi } from '@/services/admin.api'
 
-use([BarChart, LineChart, PieChart, GridComponent, TooltipComponent, TitleComponent, LegendComponent, CanvasRenderer])
+use([
+  BarChart,
+  LineChart,
+  PieChart,
+  GridComponent,
+  TooltipComponent,
+  TitleComponent,
+  LegendComponent,
+  CanvasRenderer,
+])
 
 const range = ref('30d')
 const overview = ref({
