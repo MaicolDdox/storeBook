@@ -41,8 +41,8 @@ All metrics endpoints are protected by `auth:sanctum` and `role:admin`.
   "success": true,
   "data": {
     "items": [
-      { "name": "Fiction", "value": 42 },
-      { "name": "Science", "value": 28 }
+      { "category": "Fiction", "count": 42 },
+      { "category": "Science", "count": 28 }
     ]
   }
 }

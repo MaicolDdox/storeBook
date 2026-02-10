@@ -107,7 +107,7 @@ class AdminMetricsController extends Controller
         $days = $this->resolveRangeDays((string) $request->get('range', '30d'));
         $start = now()->subDays($days)->startOfDay();
 
-        $data = DB::table('order_items')
+        $items = DB::table('order_items')
             ->join('orders', 'order_items.order_id', '=', 'orders.id')
             ->join('books', 'order_items.book_id', '=', 'books.id')
             ->join('categories', 'books.category_id', '=', 'categories.id')
@@ -116,13 +116,22 @@ class AdminMetricsController extends Controller
             ->groupBy('categories.id', 'categories.name')
             ->orderByDesc('total_quantity')
             ->limit(10)
-            ->get();
+            ->get()
+            ->map(static function (object $row): array {
+                $category = trim((string) ($row->name ?? ''));
+                if ($category === '') {
+                    $category = 'Unknown';
+                }
 
-        return ApiResponse::success('Top categories retrieved.', [
-            'items' => $data->map(fn ($row) => [
-                'category' => (string) $row->name,
-                'count' => (int) $row->total_quantity,
-            ]),
+                return [
+                    'category' => $category,
+                    'count' => max(0, (int) ($row->total_quantity ?? 0)),
+                ];
+            })
+            ->values();
+
+        return ApiResponse::success('Top categories fetched successfully.', [
+            'items' => $items,
         ]);
     }
 

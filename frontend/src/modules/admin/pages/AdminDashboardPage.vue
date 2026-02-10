@@ -53,8 +53,27 @@
       <BaseCard>
         <h2 class="mb-4 text-lg font-bold text-slate-800">Top Categories</h2>
         <div class="h-64">
+          <div
+            v-if="topCategoriesLoading"
+            class="flex h-full items-center justify-center text-sm font-medium text-slate-500"
+          >
+            Loading category metrics...
+          </div>
+          <div
+            v-else-if="topCategoriesError"
+            class="flex h-full flex-col items-center justify-center gap-3 text-center"
+          >
+            <p class="text-sm font-medium text-rose-600">{{ topCategoriesError }}</p>
+            <BaseButton variant="secondary" @click="loadTopCategoriesChart">Retry</BaseButton>
+          </div>
+          <div
+            v-else-if="topCategories.length === 0"
+            class="flex h-full items-center justify-center text-sm font-medium text-slate-500"
+          >
+            No category data available
+          </div>
           <v-chart
-            v-if="categoriesChartOption"
+            v-else-if="categoriesChartOption"
             :option="categoriesChartOption"
             autoresize
             class="h-full w-full"
@@ -125,6 +144,7 @@ import {
 import { CanvasRenderer } from 'echarts/renderers'
 import VChart from 'vue-echarts'
 import BaseCard from '@/components/base/BaseCard.vue'
+import BaseButton from '@/components/base/BaseButton.vue'
 import BaseTable from '@/components/base/BaseTable.vue'
 import { adminApi } from '@/services/admin.api'
 
@@ -149,6 +169,8 @@ const overview = ref({
 })
 const ordersData = ref({ labels: [], values: [] })
 const topCategories = ref([])
+const topCategoriesLoading = ref(false)
+const topCategoriesError = ref('')
 const statusDistribution = ref([])
 const recentOrders = ref([])
 const lowStock = ref([])
@@ -223,7 +245,7 @@ const categoriesChartOption = computed(() => {
     grid: { left: '3%', right: '4%', bottom: '3%', top: '5%', containLabel: true },
     xAxis: {
       type: 'category',
-      data: topCategories.value.map((c) => c.name),
+      data: topCategories.value.map((item) => item.category),
       axisLabel: { color: '#475569', rotate: 30 },
     },
     yAxis: {
@@ -234,30 +256,90 @@ const categoriesChartOption = computed(() => {
     series: [
       {
         type: 'bar',
-        data: topCategories.value.map((c) => c.value),
+        data: topCategories.value.map((item) => item.count),
         itemStyle: { color: '#00ABE4' },
       },
     ],
   }
 })
 
+function normalizeTopCategoryItem(item, index) {
+  const source = item && typeof item === 'object' ? item : {}
+  const categoryRaw =
+    source.category ?? source.name ?? source.label ?? source.category_name ?? source.categoryName
+  const categoryValue = typeof categoryRaw === 'string' ? categoryRaw.trim() : ''
+  const category = categoryValue || 'Unknown'
+
+  if (!categoryValue && import.meta.env.DEV) {
+    console.warn('[AdminDashboard] Missing category name in top-categories item:', {
+      index,
+      item: source,
+    })
+  }
+
+  const countRaw = source.count ?? source.value ?? source.total_quantity ?? source.totalQuantity ?? 0
+  const countParsed = Number.parseInt(String(countRaw), 10)
+  const count = Number.isFinite(countParsed) && countParsed >= 0 ? countParsed : 0
+
+  return { category, count }
+}
+
+function normalizeTopCategories(rawItems) {
+  if (!Array.isArray(rawItems)) {
+    if (import.meta.env.DEV) {
+      console.warn('[AdminDashboard] top-categories returned a non-array payload:', rawItems)
+    }
+    return []
+  }
+
+  return rawItems.map((item, index) => normalizeTopCategoryItem(item, index))
+}
+
 async function loadOverview() {
   const { data } = await adminApi.getDashboard()
   overview.value = data.data
 }
 
-async function loadCharts() {
-  const [ordersRes, categoriesRes, statusRes] = await Promise.all([
-    adminApi.getOrdersOverTime(range.value),
-    adminApi.getTopCategories(range.value),
-    adminApi.getOrderStatusDistribution(range.value),
-  ])
+async function loadOrdersChart() {
+  const ordersRes = await adminApi.getOrdersOverTime(range.value)
   ordersData.value = {
-    labels: ordersRes.data.data.labels,
-    values: ordersRes.data.data.values,
+    labels: ordersRes.data?.data?.labels ?? [],
+    values: ordersRes.data?.data?.values ?? [],
   }
-  topCategories.value = categoriesRes.data.data.items
-  statusDistribution.value = statusRes.data.data.items
+}
+
+async function loadOrderStatusChart() {
+  const statusRes = await adminApi.getOrderStatusDistribution(range.value)
+  statusDistribution.value = statusRes.data?.data?.items ?? []
+}
+
+async function loadTopCategoriesChart() {
+  topCategoriesLoading.value = true
+  topCategoriesError.value = ''
+
+  try {
+    const categoriesRes = await adminApi.getTopCategories(range.value)
+    if (import.meta.env.DEV) {
+      console.debug('[AdminDashboard] Raw top-categories response:', categoriesRes.data)
+    }
+    topCategories.value = normalizeTopCategories(categoriesRes.data?.data?.items)
+  } catch (error) {
+    topCategories.value = []
+    topCategoriesError.value = 'Unable to load category metrics.'
+    if (import.meta.env.DEV) {
+      console.error('[AdminDashboard] Failed to load top categories:', error)
+    }
+  } finally {
+    topCategoriesLoading.value = false
+  }
+}
+
+async function loadCharts() {
+  await Promise.all([
+    loadOrdersChart(),
+    loadTopCategoriesChart(),
+    loadOrderStatusChart(),
+  ])
 }
 
 async function loadRecentAndLowStock() {
