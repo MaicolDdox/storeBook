@@ -9,7 +9,7 @@
             v-for="item in navLinks"
             :key="item.to"
             :to="item.to"
-            class="rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-lightBlue hover:text-slate-900"
+            class="whitespace-nowrap rounded-lg bg-[#0097c9] brightBlue px-3 py-1.5 text-xs font-semibold text-white"
           >
             {{ item.label }}
           </router-link>
@@ -19,7 +19,7 @@
           <router-link
             v-if="authStore.isAdmin"
             to="/admin/dashboard"
-            class="inline-flex items-center justify-center rounded-xl border-2 border-transparent border-brightBlue px-5 py-2.5 text-sm font-bold text-brightBlue transition hover:bg-lightBlue"
+            class="whitespace-nowrap rounded-lg bg-[#0097c9] brightBlue px-3 py-1.5 text-xs font-semibold text-white"
           >
             Admin
           </router-link>
@@ -36,7 +36,7 @@
           v-for="item in navLinks"
           :key="item.to"
           :to="item.to"
-          class="whitespace-nowrap rounded-lg bg-brightBlue px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#0097c9]"
+          class="whitespace-nowrap rounded-lg bg-[#0097c9] brightBlue px-3 py-1.5 text-xs font-semibold text-white"
         >
           {{ item.label }}
         </router-link>
