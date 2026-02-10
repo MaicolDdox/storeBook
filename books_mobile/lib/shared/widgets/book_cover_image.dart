@@ -20,6 +20,7 @@ class BookCoverImage extends StatelessWidget {
   final double height;
   final double borderRadius;
   final BoxFit fit;
+  static String? _lastFailingUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +54,15 @@ class BookCoverImage extends StatelessWidget {
         errorBuilder: (_, __, ___) {
           if (kDebugMode) {
             debugPrint('[Catalog] Failed to load book cover: $resolvedUrl');
+            _lastFailingUrl = resolvedUrl;
           }
           return _PlaceholderCover(
             width: width,
             height: height,
             borderRadius: borderRadius,
-            showErrorLabel: kDebugMode,
+            errorCaption: kDebugMode
+                ? 'Image failed to load\n${_lastFailingUrl ?? ''}'
+                : null,
           );
         },
       ),
@@ -72,14 +76,14 @@ class _PlaceholderCover extends StatelessWidget {
     required this.height,
     required this.borderRadius,
     this.isLoading = false,
-    this.showErrorLabel = false,
+    this.errorCaption,
   });
 
   final double width;
   final double height;
   final double borderRadius;
   final bool isLoading;
-  final bool showErrorLabel;
+  final String? errorCaption;
 
   @override
   Widget build(BuildContext context) {
@@ -101,13 +105,16 @@ class _PlaceholderCover extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const Icon(Symbols.menu_book, color: Color(0xFF00ABE4)),
-                  if (showErrorLabel) ...[
+                  if (errorCaption != null && errorCaption!.isNotEmpty) ...[
                     const SizedBox(height: 6),
-                    const Text(
-                      'Image failed',
-                      style: TextStyle(
+                    Text(
+                      errorCaption!,
+                      textAlign: TextAlign.center,
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
                         color: Color(0xFF385A72),
-                        fontSize: 11,
+                        fontSize: 10,
                         fontWeight: FontWeight.w600,
                       ),
                     ),

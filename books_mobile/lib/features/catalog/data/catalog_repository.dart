@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../../core/network/api_client.dart';
 import '../../../shared/models/book_model.dart';
 import '../../../shared/models/category_model.dart';
@@ -25,6 +27,18 @@ class CatalogRepository {
     );
 
     final items = response.data['data'] as List<dynamic>;
+    if (kDebugMode) {
+      for (var index = 0; index < items.length && index < 3; index++) {
+        final row = items[index] as Map<String, dynamic>;
+        debugPrint(
+          '[Catalog] Raw image fields book ${row['id']}: '
+          'image_url=${row['image_url']} '
+          'cover_image_url=${row['cover_image_url']} '
+          'cover_image=${row['cover_image']} '
+          'image_path=${row['image_path']}',
+        );
+      }
+    }
     return items
         .map((item) => BookModel.fromJson(item as Map<String, dynamic>))
         .toList();

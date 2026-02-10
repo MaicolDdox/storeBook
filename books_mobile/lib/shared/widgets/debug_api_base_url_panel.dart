@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/config/app_config.dart';
+import '../screens/debug_network_diagnostics_screen.dart';
 
 class DebugApiBaseUrlPanel extends StatelessWidget {
   const DebugApiBaseUrlPanel({super.key});
@@ -65,6 +66,21 @@ class DebugApiBaseUrlPanel extends StatelessWidget {
                     SnackBar(content: Text('API base URL set to $value')),
                   );
                 },
+              ),
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const DebugNetworkDiagnosticsScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.science),
+                  label: const Text('Open diagnostics'),
+                ),
               ),
             ],
           ),
