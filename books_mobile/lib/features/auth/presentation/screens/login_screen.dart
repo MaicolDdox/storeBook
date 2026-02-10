@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../../shared/widgets/auth_brand_logo.dart';
 import '../providers/auth_provider.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, this.popOnSuccess = false});
+
+  final bool popOnSuccess;
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -27,6 +30,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authControllerProvider);
+    ref.listen<AuthState>(authControllerProvider, (previous, next) {
+      if (!widget.popOnSuccess) {
+        return;
+      }
+
+      final wasAuthenticated = previous?.isAuthenticated ?? false;
+      if (!wasAuthenticated && next.isAuthenticated && mounted) {
+        Navigator.of(context).pop(true);
+      }
+    });
 
     return Scaffold(
       body: SafeArea(
@@ -44,8 +57,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       mainAxisSize: MainAxisSize.min,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Icon(Symbols.login, size: 34),
-                        const SizedBox(height: 12),
+                        const AuthBrandLogo(),
+                        const SizedBox(height: 16),
                         Text(
                           'Sign in to StoreBook',
                           style: Theme.of(context).textTheme.headlineSmall

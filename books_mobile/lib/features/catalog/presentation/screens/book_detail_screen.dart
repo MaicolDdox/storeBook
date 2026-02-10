@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../auth/presentation/providers/auth_provider.dart';
+import '../../../auth/presentation/screens/login_screen.dart';
 import '../../../cart/presentation/providers/cart_provider.dart';
+import '../../../../shared/widgets/book_cover_image.dart';
 import '../providers/catalog_provider.dart';
 
 class BookDetailScreen extends ConsumerStatefulWidget {
@@ -34,6 +37,13 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      BookCoverImage(
+                        book: book,
+                        width: double.infinity,
+                        height: 300,
+                        borderRadius: 12,
+                      ),
+                      const SizedBox(height: 16),
                       Text(
                         book.title,
                         style: Theme.of(context).textTheme.headlineSmall
@@ -110,18 +120,52 @@ class _BookDetailScreenState extends ConsumerState<BookDetailScreen> {
   }
 
   Future<void> _addToCart(int bookId) async {
+    final authenticated = await _ensureAuthenticated();
+    if (!authenticated) {
+      return;
+    }
+
     await ref
         .read(cartControllerProvider.notifier)
         .addItem(bookId, quantity: _quantity);
     final cartState = ref.read(cartControllerProvider);
     if (!mounted) return;
 
+    if (cartState.errorStatusCode == 401) {
+      await ref.read(authControllerProvider.notifier).logout();
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Please sign in to add books to your cart.'),
+        ),
+      );
+      return;
+    }
+
     final message = cartState.errorMessage ?? 'Book added to cart.';
+    ScaffoldMessenger.of(context).hideCurrentSnackBar();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
         backgroundColor: cartState.errorMessage == null ? null : Colors.red,
       ),
     );
+  }
+
+  Future<bool> _ensureAuthenticated() async {
+    final authState = ref.read(authControllerProvider);
+    if (authState.isAuthenticated) {
+      return true;
+    }
+
+    if (!mounted) {
+      return false;
+    }
+
+    final loginResult = await Navigator.of(context).push<bool>(
+      MaterialPageRoute(builder: (_) => const LoginScreen(popOnSuccess: true)),
+    );
+    return loginResult == true ||
+        ref.read(authControllerProvider).isAuthenticated;
   }
 }

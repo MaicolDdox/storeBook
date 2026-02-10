@@ -1,5 +1,7 @@
 <template>
   <BaseCard>
+    <AuthBrandLogo />
+
     <div class="mb-6 space-y-1 text-center">
       <h1 class="text-2xl font-extrabold text-slate-800">Create Account</h1>
       <p class="text-sm text-slate-500">Join StoreBook and start your next read.</p>
@@ -34,6 +36,7 @@
 import { reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { UserPlusIcon } from '@heroicons/vue/24/solid'
+import AuthBrandLogo from '@/components/brand/AuthBrandLogo.vue'
 import BaseCard from '@/components/base/BaseCard.vue'
 import BaseInput from '@/components/base/BaseInput.vue'
 import AppButton from '@/components/ui/AppButton.vue'

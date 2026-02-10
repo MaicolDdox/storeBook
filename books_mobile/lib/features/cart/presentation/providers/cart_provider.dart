@@ -14,22 +14,28 @@ class CartState {
     ),
     this.isLoading = false,
     this.errorMessage,
+    this.errorStatusCode,
   });
 
   final CartModel cart;
   final bool isLoading;
   final String? errorMessage;
+  final int? errorStatusCode;
 
   CartState copyWith({
     CartModel? cart,
     bool? isLoading,
     String? errorMessage,
+    int? errorStatusCode,
     bool clearError = false,
   }) {
     return CartState(
       cart: cart ?? this.cart,
       isLoading: isLoading ?? this.isLoading,
       errorMessage: clearError ? null : errorMessage ?? this.errorMessage,
+      errorStatusCode: clearError
+          ? null
+          : errorStatusCode ?? this.errorStatusCode,
     );
   }
 }
@@ -43,9 +49,13 @@ class CartController extends StateNotifier<CartState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final cart = await _ref.read(cartRepositoryProvider).fetchCart();
-      state = state.copyWith(cart: cart, isLoading: false);
+      state = state.copyWith(cart: cart, isLoading: false, clearError: true);
     } on ApiException catch (exception) {
-      state = state.copyWith(isLoading: false, errorMessage: exception.message);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: exception.message,
+        errorStatusCode: exception.statusCode,
+      );
     }
   }
 
@@ -55,9 +65,13 @@ class CartController extends StateNotifier<CartState> {
       final cart = await _ref
           .read(cartRepositoryProvider)
           .addItem(bookId: bookId, quantity: quantity);
-      state = state.copyWith(cart: cart, isLoading: false);
+      state = state.copyWith(cart: cart, isLoading: false, clearError: true);
     } on ApiException catch (exception) {
-      state = state.copyWith(isLoading: false, errorMessage: exception.message);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: exception.message,
+        errorStatusCode: exception.statusCode,
+      );
     }
   }
 
@@ -67,9 +81,13 @@ class CartController extends StateNotifier<CartState> {
       final cart = await _ref
           .read(cartRepositoryProvider)
           .updateItem(itemId: itemId, quantity: quantity);
-      state = state.copyWith(cart: cart, isLoading: false);
+      state = state.copyWith(cart: cart, isLoading: false, clearError: true);
     } on ApiException catch (exception) {
-      state = state.copyWith(isLoading: false, errorMessage: exception.message);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: exception.message,
+        errorStatusCode: exception.statusCode,
+      );
     }
   }
 
@@ -77,9 +95,13 @@ class CartController extends StateNotifier<CartState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final cart = await _ref.read(cartRepositoryProvider).removeItem(itemId);
-      state = state.copyWith(cart: cart, isLoading: false);
+      state = state.copyWith(cart: cart, isLoading: false, clearError: true);
     } on ApiException catch (exception) {
-      state = state.copyWith(isLoading: false, errorMessage: exception.message);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: exception.message,
+        errorStatusCode: exception.statusCode,
+      );
     }
   }
 
@@ -87,9 +109,13 @@ class CartController extends StateNotifier<CartState> {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
       final cart = await _ref.read(cartRepositoryProvider).clear();
-      state = state.copyWith(cart: cart, isLoading: false);
+      state = state.copyWith(cart: cart, isLoading: false, clearError: true);
     } on ApiException catch (exception) {
-      state = state.copyWith(isLoading: false, errorMessage: exception.message);
+      state = state.copyWith(
+        isLoading: false,
+        errorMessage: exception.message,
+        errorStatusCode: exception.statusCode,
+      );
     }
   }
 }

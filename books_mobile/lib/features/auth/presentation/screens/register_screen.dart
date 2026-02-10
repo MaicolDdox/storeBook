@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../../shared/widgets/auth_brand_logo.dart';
 import '../providers/auth_provider.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
@@ -47,8 +48,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
-                        const Icon(Symbols.person_add, size: 34),
-                        const SizedBox(height: 12),
+                        const AuthBrandLogo(),
+                        const SizedBox(height: 16),
                         TextFormField(
                           controller: _nameController,
                           decoration: const InputDecoration(

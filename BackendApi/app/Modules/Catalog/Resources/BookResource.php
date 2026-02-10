@@ -28,6 +28,7 @@ class BookResource extends JsonResource
             'cover_image' => $this->cover_image,
             'cover_image_url' => $coverImageUrl,
             'coverImageUrl' => $coverImageUrl,
+            'image_url' => $coverImageUrl,
             'description' => $this->description,
             'author' => $this->author,
             'publisher' => $this->publisher,
@@ -43,7 +44,7 @@ class BookResource extends JsonResource
 
     private function resolveCoverImageUrl(Request $request): ?string
     {
-        $coverImage = (string) ($this->cover_image ?? '');
+        $coverImage = trim((string) ($this->cover_image ?? ''));
         if ($coverImage === '') {
             return null;
         }
@@ -52,23 +53,64 @@ class BookResource extends JsonResource
             return $coverImage;
         }
 
+        $normalizedPath = $this->normalizeCoverImagePath($coverImage);
+        if ($normalizedPath === null || ! Storage::disk('public')->exists($normalizedPath)) {
+            return null;
+        }
+
+        $configuredAppUrl = rtrim((string) config('app.url'), '/');
+        $requestBaseUrl = rtrim($request->getSchemeAndHttpHost(), '/');
+        $baseUrl = $configuredAppUrl !== '' ? $configuredAppUrl : $requestBaseUrl;
+
+        if ($this->shouldUseRequestBaseUrl($configuredAppUrl, $requestBaseUrl)) {
+            $baseUrl = $requestBaseUrl;
+        }
+
+        return $baseUrl.'/api/catalog/books/'.$this->id.'/cover-image';
+    }
+
+    private function normalizeCoverImagePath(string $coverImage): ?string
+    {
         $normalizedPath = ltrim($coverImage, '/');
+
         if (Str::startsWith($normalizedPath, 'storage/')) {
             $normalizedPath = Str::after($normalizedPath, 'storage/');
         }
+
         if (Str::startsWith($normalizedPath, 'public/')) {
             $normalizedPath = Str::after($normalizedPath, 'public/');
         }
 
-        $storageUrl = Storage::disk('public')->url($normalizedPath);
-        $storagePath = Str::startsWith($storageUrl, ['http://', 'https://'])
-            ? (string) parse_url($storageUrl, PHP_URL_PATH)
-            : $storageUrl;
+        return trim($normalizedPath) === '' ? null : $normalizedPath;
+    }
 
-        if ($storagePath === '') {
-            return null;
+    private function shouldUseRequestBaseUrl(string $configuredAppUrl, string $requestBaseUrl): bool
+    {
+        if ($requestBaseUrl === '' || $configuredAppUrl === '') {
+            return false;
         }
 
-        return $request->getSchemeAndHttpHost().'/'.ltrim($storagePath, '/');
+        $configuredHost = (string) parse_url($configuredAppUrl, PHP_URL_HOST);
+        $configuredPort = parse_url($configuredAppUrl, PHP_URL_PORT);
+        $requestHost = (string) parse_url($requestBaseUrl, PHP_URL_HOST);
+        $requestPort = parse_url($requestBaseUrl, PHP_URL_PORT);
+
+        if (! in_array($configuredHost, ['localhost', '127.0.0.1'], true)) {
+            return false;
+        }
+
+        if ($configuredPort === null) {
+            return true;
+        }
+
+        if ($requestHost === '') {
+            return false;
+        }
+
+        if ($requestHost !== $configuredHost) {
+            return true;
+        }
+
+        return (int) $requestPort !== (int) $configuredPort;
     }
 }

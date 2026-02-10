@@ -1,6 +1,11 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../app/providers.dart';
+import '../../../../core/utils/resolve_book_image_url.dart';
 import '../../../../core/errors/api_exception.dart';
 import '../../../../shared/models/book_model.dart';
 import '../../../../shared/models/category_model.dart';
@@ -55,6 +60,7 @@ class CatalogController extends StateNotifier<CatalogState> {
   CatalogController(this._ref) : super(const CatalogState());
 
   final Ref _ref;
+  bool _loggedFirstImageProbe = false;
 
   Future<void> loadInitial() async {
     state = state.copyWith(isLoading: true, clearError: true);
@@ -72,6 +78,7 @@ class CatalogController extends StateNotifier<CatalogState> {
         genres: results[2] as List<GenreModel>,
         isLoading: false,
       );
+      _debugProbeFirstImage(state.books);
     } on ApiException catch (exception) {
       state = state.copyWith(isLoading: false, errorMessage: exception.message);
     }
@@ -116,8 +123,42 @@ class CatalogController extends StateNotifier<CatalogState> {
           );
 
       state = state.copyWith(books: books, isLoading: false);
+      _debugProbeFirstImage(books);
     } on ApiException catch (exception) {
       state = state.copyWith(isLoading: false, errorMessage: exception.message);
+    }
+  }
+
+  void _debugProbeFirstImage(List<BookModel> books) {
+    if (!kDebugMode || _loggedFirstImageProbe || books.isEmpty) {
+      return;
+    }
+
+    final firstUrl = resolveBookImageUrl(books.first);
+    if (firstUrl == null) {
+      debugPrint('[Catalog] First book has no image URL.');
+      _loggedFirstImageProbe = true;
+      return;
+    }
+
+    _loggedFirstImageProbe = true;
+    debugPrint('[Catalog] First book image URL: $firstUrl');
+    unawaited(_logImageResponseStatus(firstUrl));
+  }
+
+  Future<void> _logImageResponseStatus(String url) async {
+    try {
+      final response = await Dio(
+        BaseOptions(
+          connectTimeout: const Duration(seconds: 6),
+          receiveTimeout: const Duration(seconds: 6),
+          followRedirects: true,
+          validateStatus: (_) => true,
+        ),
+      ).head(url);
+      debugPrint('[Catalog] First image HTTP status: ${response.statusCode}');
+    } catch (error) {
+      debugPrint('[Catalog] First image request failed: $error');
     }
   }
 }

@@ -11,6 +11,8 @@ class BookModel {
     required this.status,
     this.coverImage,
     this.coverImageUrl,
+    this.imageUrl,
+    this.imagePath,
     this.publisher,
     this.publishedYear,
     this.pageCount,
@@ -21,6 +23,8 @@ class BookModel {
   final String title;
   final String? coverImage;
   final String? coverImageUrl;
+  final String? imageUrl;
+  final String? imagePath;
   final String description;
   final String author;
   final String? publisher;
@@ -40,7 +44,10 @@ class BookModel {
       id: (json['id'] as num).toInt(),
       title: (json['title'] ?? '') as String,
       coverImage: json['cover_image'] as String?,
-      coverImageUrl: json['cover_image_url'] as String?,
+      coverImageUrl:
+          (json['cover_image_url'] ?? json['coverImageUrl']) as String?,
+      imageUrl: (json['image_url'] ?? json['imageUrl']) as String?,
+      imagePath: (json['image_path'] ?? json['cover_image_path']) as String?,
       description: (json['description'] ?? '') as String,
       author: (json['author'] ?? '') as String,
       publisher: json['publisher'] as String?,
