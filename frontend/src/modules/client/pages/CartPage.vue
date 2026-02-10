@@ -29,7 +29,7 @@
         <div class="flex items-center gap-2">
           <button
             type="button"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-brightBlue bg-brightBlue text-sm font-bold text-white transition hover:bg-[#0097c9]"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-brightBlue bg-[#0097c9] text-sm font-bold text-white"
             aria-label="Decrease quantity"
             @click="changeQty(item, item.quantity - 1)"
           >
@@ -40,7 +40,7 @@
           }}</span>
           <button
             type="button"
-            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-brightBlue bg-brightBlue text-sm font-bold text-white transition hover:bg-[#0097c9]"
+            class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-brightBlue bg-[#0097c9] text-sm font-bold text-white"
             aria-label="Increase quantity"
             @click="changeQty(item, item.quantity + 1)"
           >
