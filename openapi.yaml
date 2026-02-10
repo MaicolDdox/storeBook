@@ -6,7 +6,12 @@ info:
     Laravel 12 modular monolith API for StoreBook.
     Auth uses Sanctum Bearer tokens.
 servers:
-  - url: http://127.0.0.1:8000/api
+  - url: http://{host}:8000/api
+    description: StoreBook API server for local, emulator, or LAN usage.
+    variables:
+      host:
+        default: localhost
+        description: Use localhost or 127.0.0.1 for local web, 10.0.2.2 for Android emulator, or your LAN IPv4 for physical devices.
 security:
   - bearerAuth: []
 paths:
