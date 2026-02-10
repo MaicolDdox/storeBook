@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../../core/utils/resolve_image_url.dart';
 import '../../../../shared/models/book_model.dart';
 import '../../../../shared/models/category_model.dart';
 import '../../models/admin_book_payload.dart';
@@ -374,10 +375,15 @@ class _AdminBookFormScreenState extends ConsumerState<AdminBookFormScreen> {
     }
 
     if (_existingImageUrl != null && _existingImageUrl!.isNotEmpty) {
+      final imageUrl = resolveImageUrl(_existingImageUrl);
+      if (imageUrl == null) {
+        return const SizedBox.shrink();
+      }
+
       return ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Image.network(
-          _existingImageUrl!,
+          imageUrl,
           width: 120,
           height: 160,
           fit: BoxFit.cover,
@@ -427,7 +433,7 @@ class _AdminBookFormScreenState extends ConsumerState<AdminBookFormScreen> {
     _status = book.status;
     _selectedCategoryId = book.category?.id;
     _selectedTypeId = book.category?.genre?.id;
-    _existingImageUrl = book.coverImageUrl ?? book.coverImage;
+    _existingImageUrl = book.imageUrl ?? book.coverImageUrl ?? book.coverImage;
   }
 
   void _resolveTypeAndCategoryDefaults() {

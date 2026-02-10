@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
+import '../../../../core/utils/resolve_image_url.dart';
 import '../../../../shared/models/book_model.dart';
 import '../providers/admin_controller.dart';
 import 'admin_book_form_screen.dart';
@@ -210,7 +211,9 @@ class _BookCoverThumb extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final imageUrl = book.coverImageUrl ?? book.coverImage;
+    final imageUrl = resolveImageUrl(
+      book.imageUrl ?? book.coverImageUrl ?? book.coverImage,
+    );
 
     if (imageUrl == null || imageUrl.isEmpty) {
       return const CircleAvatar(child: Icon(Symbols.book_2));

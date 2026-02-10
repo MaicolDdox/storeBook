@@ -4,14 +4,16 @@ Flutter mobile client for StoreBook.
 
 ## API configuration
 
-By default:
-- Android emulator uses `http://10.0.2.2:8000/api`
-- iOS/macOS/Windows/Linux use `http://127.0.0.1:8000/api`
+Default compile-time base URL:
+- `http://192.168.20.55:8000`
+
+Flutter derives API prefix automatically:
+- `${apiBaseUrl}/api`
 
 You can override the API URL at runtime:
 
 ```bash
-flutter run --dart-define=API_BASE_URL=http://192.168.1.10:8000/api
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
 ```
 
-Use this override when running on a physical device.
+Use host-only URLs (no `/api` suffix) for overrides.

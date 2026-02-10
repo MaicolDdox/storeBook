@@ -67,18 +67,11 @@ class AdminBookImageUploadTest extends TestCase
 
         $coverImagePath = $response->json('data.cover_image');
         $coverImageUrl = $response->json('data.cover_image_url');
-        $bookId = (int) $response->json('data.id');
-
         $this->assertNotEmpty($coverImagePath);
         $this->assertNotEmpty($coverImageUrl);
         $this->assertStringStartsWith('books/covers/', $coverImagePath);
         $this->assertStringStartsWith('http', $coverImageUrl);
-        $this->assertStringContainsString("/api/catalog/books/{$bookId}/cover-image", $coverImageUrl);
+        $this->assertStringContainsString('/storage/books/covers/', $coverImageUrl);
         Storage::disk('public')->assertExists($coverImagePath);
-
-        $coverPath = (string) parse_url($coverImageUrl, PHP_URL_PATH);
-        $this->get($coverPath, ['Origin' => 'http://localhost:64587'])
-            ->assertOk()
-            ->assertHeader('Access-Control-Allow-Origin', 'http://localhost:64587');
     }
 }

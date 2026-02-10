@@ -11,29 +11,25 @@
 
 ## How `image_url` Is Built
 - `BookResource` returns `image_url` as an absolute URL.
-- For stored files, it now points to:
-  - `/api/catalog/books/{book}/cover-image`
-- This route reads from the public disk and returns the image with cache headers.
+- For stored files, it points to a public storage URL:
+  - `/storage/books/covers/...`
+- URL generation uses:
+  - `url(Storage::disk('public')->url($path))`
+- This relies on `APP_URL` to produce a host reachable by the client device.
 - If no image exists, `image_url` is `null`.
 
 ## CORS for Flutter Web
 - CORS config is in `BackendApi/config/cors.php`.
-- It allows:
-  - methods: `GET, POST, PUT, PATCH, DELETE, OPTIONS`
-  - headers: `Authorization, Content-Type, Accept, Origin, X-Requested-With`
-  - origin patterns for local development:
-    - `http://localhost:*`
-    - `http://127.0.0.1:*`
-- Since cover images are served from `/api/...`, CORS middleware is applied to image responses used by Flutter Web.
+- API requests use CORS (`/api/*`).
+- Cover images served from `/storage/*` are regular public asset requests and do not require API CORS preflight for display.
 
 ## Base URL Rules
 - Flutter base URL config is in `books_mobile/lib/core/config/app_config.dart`.
 - Defaults:
-  - Web/Desktop: `http://127.0.0.1:8000/api`
-  - Android emulator: `http://10.0.2.2:8000/api`
+  - Web/Desktop: `http://127.0.0.1:8000`
+  - Android emulator: `http://10.0.2.2:8000`
 - Override when needed:
-  - `--dart-define=API_BASE_URL=http://<HOST>:8000/api`
-  - `--dart-define=API_ORIGIN=http://<HOST>:8000`
+  - `--dart-define=API_BASE_URL=http://<HOST>:8000`
 
 ## Quick Verification
 1. Open `/api/catalog/books` and copy one `image_url`.

@@ -19,7 +19,7 @@ class BookResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $coverImageUrl = $this->resolveCoverImageUrl($request);
+        $coverImageUrl = $this->resolveCoverImageUrl();
 
         return [
             'id' => $this->id,
@@ -42,7 +42,7 @@ class BookResource extends JsonResource
         ];
     }
 
-    private function resolveCoverImageUrl(Request $request): ?string
+    private function resolveCoverImageUrl(): ?string
     {
         $coverImage = trim((string) ($this->cover_image ?? ''));
         if ($coverImage === '') {
@@ -58,15 +58,7 @@ class BookResource extends JsonResource
             return null;
         }
 
-        $configuredAppUrl = rtrim((string) config('app.url'), '/');
-        $requestBaseUrl = rtrim($request->getSchemeAndHttpHost(), '/');
-        $baseUrl = $configuredAppUrl !== '' ? $configuredAppUrl : $requestBaseUrl;
-
-        if ($this->shouldUseRequestBaseUrl($configuredAppUrl, $requestBaseUrl)) {
-            $baseUrl = $requestBaseUrl;
-        }
-
-        return $baseUrl.'/api/catalog/books/'.$this->id.'/cover-image';
+        return url(Storage::disk('public')->url($normalizedPath));
     }
 
     private function normalizeCoverImagePath(string $coverImage): ?string
@@ -82,35 +74,5 @@ class BookResource extends JsonResource
         }
 
         return trim($normalizedPath) === '' ? null : $normalizedPath;
-    }
-
-    private function shouldUseRequestBaseUrl(string $configuredAppUrl, string $requestBaseUrl): bool
-    {
-        if ($requestBaseUrl === '' || $configuredAppUrl === '') {
-            return false;
-        }
-
-        $configuredHost = (string) parse_url($configuredAppUrl, PHP_URL_HOST);
-        $configuredPort = parse_url($configuredAppUrl, PHP_URL_PORT);
-        $requestHost = (string) parse_url($requestBaseUrl, PHP_URL_HOST);
-        $requestPort = parse_url($requestBaseUrl, PHP_URL_PORT);
-
-        if (! in_array($configuredHost, ['localhost', '127.0.0.1'], true)) {
-            return false;
-        }
-
-        if ($configuredPort === null) {
-            return true;
-        }
-
-        if ($requestHost === '') {
-            return false;
-        }
-
-        if ($requestHost !== $configuredHost) {
-            return true;
-        }
-
-        return (int) $requestPort !== (int) $configuredPort;
     }
 }

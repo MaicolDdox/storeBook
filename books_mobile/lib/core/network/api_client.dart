@@ -8,7 +8,7 @@ class ApiClient {
   ApiClient(this._tokenStorage)
     : _dio = Dio(
         BaseOptions(
-          baseUrl: AppConfig.apiBaseUrl,
+          baseUrl: AppConfig.activeApiPrefix,
           connectTimeout: const Duration(seconds: 20),
           receiveTimeout: const Duration(seconds: 20),
           headers: {'Accept': 'application/json'},
@@ -17,6 +17,11 @@ class ApiClient {
     _dio.interceptors.add(
       InterceptorsWrapper(
         onRequest: (options, handler) async {
+          final currentPrefix = AppConfig.activeApiPrefix;
+          if (options.baseUrl != currentPrefix) {
+            options.baseUrl = currentPrefix;
+          }
+
           final token = await _tokenStorage.readToken();
           if (token != null && token.isNotEmpty) {
             options.headers['Authorization'] = 'Bearer $token';
@@ -76,7 +81,9 @@ class ApiClient {
       return ApiException(
         statusCode: statusCode,
         message:
-            'Unable to reach the API server. Verify API_BASE_URL and that Laravel is running.',
+            'Unable to reach the API server at ${AppConfig.activeApiBaseUrl}. '
+            'Phone and PC must be on the same Wi-Fi. '
+            'Open ${AppConfig.activeApiBaseUrl} in the phone browser to test.',
       );
     }
 

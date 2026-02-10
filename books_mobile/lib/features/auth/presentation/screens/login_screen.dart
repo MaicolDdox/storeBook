@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_symbols_icons/symbols.dart';
 
 import '../../../../shared/widgets/auth_brand_logo.dart';
+import '../../../../shared/widgets/debug_api_base_url_panel.dart';
 import '../providers/auth_provider.dart';
 import 'register_screen.dart';
 
@@ -102,6 +103,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                           ),
                         ],
+                        const SizedBox(height: 12),
+                        const DebugApiBaseUrlPanel(),
                         const SizedBox(height: 16),
                         SizedBox(
                           height: 46,
