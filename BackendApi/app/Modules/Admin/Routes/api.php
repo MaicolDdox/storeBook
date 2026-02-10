@@ -14,6 +14,9 @@ Route::middleware(['auth:sanctum', 'role:admin'])
         Route::get('/dashboard', [DashboardAdminController::class, 'index']);
 
         Route::prefix('metrics')->group(function (): void {
+            Route::get('/overview', [AdminMetricsController::class, 'overview']);
+            Route::get('/orders-series', [AdminMetricsController::class, 'ordersSeries']);
+            Route::get('/order-status', [AdminMetricsController::class, 'orderStatus']);
             Route::get('/orders-over-time', [AdminMetricsController::class, 'ordersOverTime']);
             Route::get('/top-categories', [AdminMetricsController::class, 'topCategories']);
             Route::get('/order-status-distribution', [AdminMetricsController::class, 'orderStatusDistribution']);

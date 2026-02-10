@@ -159,6 +159,11 @@ class AdminRepository {
     );
   }
 
+  Future<BookModel> fetchBook(int bookId) async {
+    final response = await _apiClient.get('/admin/books/$bookId');
+    return BookModel.fromJson(response.data['data'] as Map<String, dynamic>);
+  }
+
   Future<BookModel> createBook(AdminBookPayload payload) async {
     final response = await _apiClient.post(
       '/admin/books',

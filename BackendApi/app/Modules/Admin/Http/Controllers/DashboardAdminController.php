@@ -17,6 +17,10 @@ class DashboardAdminController extends Controller
             'categories_count' => Category::query()->count(),
             'orders_count' => Order::query()->count(),
             'pending_orders_count' => Order::query()->where('status', 'pending')->count(),
+            'low_stock_count' => Book::query()
+                ->where('stock_quantity', '<=', 5)
+                ->where('stock_quantity', '>=', 0)
+                ->count(),
             'paid_revenue_cents' => (int) Order::query()
                 ->whereIn('payment_status', ['paid'])
                 ->sum('total_cents'),

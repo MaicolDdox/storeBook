@@ -7,6 +7,7 @@ import '../features/auth/data/auth_repository.dart';
 import '../features/cart/data/cart_repository.dart';
 import '../features/catalog/data/catalog_repository.dart';
 import '../features/orders/data/orders_repository.dart';
+import '../modules/admin/data/admin_metrics_repository.dart';
 import '../modules/admin/data/admin_repository.dart';
 
 final secureStorageProvider = Provider<FlutterSecureStorage>((ref) {
@@ -42,4 +43,8 @@ final ordersRepositoryProvider = Provider<OrdersRepository>((ref) {
 
 final adminRepositoryProvider = Provider<AdminRepository>((ref) {
   return AdminRepository(ref.watch(apiClientProvider));
+});
+
+final adminMetricsRepositoryProvider = Provider<AdminMetricsRepository>((ref) {
+  return AdminMetricsRepository(ref.watch(apiClientProvider));
 });
