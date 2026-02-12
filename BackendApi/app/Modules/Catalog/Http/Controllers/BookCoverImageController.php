@@ -35,10 +35,15 @@ class BookCoverImageController extends Controller
         }
 
         if (Str::startsWith($coverImage, ['http://', 'https://'])) {
-            return null;
-        }
+            $absolutePath = parse_url($coverImage, PHP_URL_PATH);
+            if (! is_string($absolutePath) || trim($absolutePath) === '') {
+                return null;
+            }
 
-        $normalizedPath = ltrim($coverImage, '/');
+            $normalizedPath = ltrim($absolutePath, '/');
+        } else {
+            $normalizedPath = ltrim($coverImage, '/');
+        }
 
         if (Str::startsWith($normalizedPath, 'storage/')) {
             $normalizedPath = Str::after($normalizedPath, 'storage/');

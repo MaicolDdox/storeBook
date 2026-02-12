@@ -50,6 +50,11 @@ class BookResource extends JsonResource
         }
 
         if (Str::startsWith($coverImage, ['http://', 'https://'])) {
+            $legacyStoragePath = $this->extractStoragePathFromAbsoluteUrl($coverImage);
+            if ($legacyStoragePath !== null && Storage::disk('public')->exists($legacyStoragePath)) {
+                return $this->catalogCoverRoute();
+            }
+
             return $coverImage;
         }
 
@@ -58,7 +63,22 @@ class BookResource extends JsonResource
             return null;
         }
 
-        return url(Storage::disk('public')->url($normalizedPath));
+        return $this->catalogCoverRoute();
+    }
+
+    private function catalogCoverRoute(): string
+    {
+        return route('catalog.books.cover-image', ['book' => $this->id], false);
+    }
+
+    private function extractStoragePathFromAbsoluteUrl(string $absoluteUrl): ?string
+    {
+        $path = parse_url($absoluteUrl, PHP_URL_PATH);
+        if (! is_string($path) || trim($path) === '') {
+            return null;
+        }
+
+        return $this->normalizeCoverImagePath($path);
     }
 
     private function normalizeCoverImagePath(string $coverImage): ?string

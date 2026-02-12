@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Book;
 use App\Models\Category;
 use App\Models\Genre;
 use App\Models\User;
@@ -67,11 +68,52 @@ class AdminBookImageUploadTest extends TestCase
 
         $coverImagePath = $response->json('data.cover_image');
         $coverImageUrl = $response->json('data.cover_image_url');
+        $bookId = (int) $response->json('data.id');
         $this->assertNotEmpty($coverImagePath);
         $this->assertNotEmpty($coverImageUrl);
         $this->assertStringStartsWith('books/covers/', $coverImagePath);
-        $this->assertStringStartsWith('http', $coverImageUrl);
-        $this->assertStringContainsString('/storage/books/covers/', $coverImageUrl);
+        $this->assertSame("/api/catalog/books/{$bookId}/cover-image", $coverImageUrl);
         Storage::disk('public')->assertExists($coverImagePath);
+    }
+
+    public function test_catalog_cover_endpoint_handles_legacy_absolute_storage_urls(): void
+    {
+        Storage::fake('public');
+
+        $genre = Genre::query()->create([
+            'name' => 'Legacy Genre',
+            'description' => 'Legacy genre',
+        ]);
+
+        $category = Category::query()->create([
+            'genre_id' => $genre->id,
+            'name' => 'Legacy Category',
+            'slug' => 'legacy-category',
+        ]);
+
+        $storedPath = UploadedFile::fake()->image('legacy-cover.png', 200, 300)
+            ->store('books/covers', 'public');
+
+        $book = Book::query()->create([
+            'category_id' => $category->id,
+            'title' => 'Legacy Absolute URL Book',
+            'slug' => 'legacy-absolute-url-book',
+            'cover_image' => "http://legacy-host.test/storage/{$storedPath}",
+            'description' => 'Book with legacy absolute storage URL.',
+            'author' => 'Legacy Author',
+            'publisher' => 'Legacy Publisher',
+            'published_year' => 2024,
+            'page_count' => 320,
+            'stock_quantity' => 5,
+            'price_cents' => 1999,
+            'status' => 'available',
+        ]);
+
+        $this->getJson("/api/catalog/books/{$book->id}")
+            ->assertOk()
+            ->assertJsonPath('data.cover_image_url', "/api/catalog/books/{$book->id}/cover-image");
+
+        $this->get("/api/catalog/books/{$book->id}/cover-image")
+            ->assertOk();
     }
 }
